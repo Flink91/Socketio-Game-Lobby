@@ -1,2 +1,2 @@
 # Socketio-Game-Lobby
-Trying to build some multiplayer boilerplate
+Not ready yet. Trying to build some multiplayer boilerplate
