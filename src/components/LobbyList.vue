@@ -7,14 +7,14 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn icon>
+          <!-- <v-btn icon>
             <v-icon>search</v-icon>
-          </v-btn>
-
+          </v-btn>-->
           <v-btn icon>
-            <v-icon>add</v-icon>
+            <v-icon @click="showCreateLobbyModal = true">add</v-icon>
           </v-btn>
         </v-toolbar>
+        <app-create-lobby-modal :show="showCreateLobbyModal"/>
 
         <v-list two-line>
           <template v-for="(item, index) in items">
@@ -31,7 +31,7 @@
                 <v-list-tile-title v-html="item.title"></v-list-tile-title>
                 <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-btn>Join</v-btn>
+              <v-btn to="lobby">Join</v-btn>
             </v-list-tile>
           </template>
         </v-list>
@@ -41,9 +41,11 @@
 </template>
 
 <script>
+import CreateLobbyModal from "@/components/CreateLobbyModal.vue";
 export default {
   data() {
     return {
+      showCreateLobbyModal: false,
       items: [
         // { header: "Today" },
         {
@@ -65,6 +67,9 @@ export default {
         }
       ]
     };
+  },
+  components: {
+    "app-create-lobby-modal": CreateLobbyModal
   }
 };
 </script>
