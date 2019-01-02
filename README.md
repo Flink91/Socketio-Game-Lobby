@@ -1,4 +1,5 @@
 # socketio-vue-game-lobby
+This is work in progress, please move along :)
 
 ## Project setup
 ```
