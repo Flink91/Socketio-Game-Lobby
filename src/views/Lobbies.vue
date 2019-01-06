@@ -52,9 +52,7 @@ export default {
     }
   },
   sockets: {
-    connect: function() {
-      alert("socket connected");
-    },
+    connect: function() {},
     ON_NEW_USER: function(data) {
       this.users = [...this.users, data];
     }

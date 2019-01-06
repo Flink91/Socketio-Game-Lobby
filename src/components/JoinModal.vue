@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog :value="dialog" persistent max-width="600px">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
         <v-card-title>
@@ -33,6 +33,7 @@
 export default {
   data() {
     return {
+      dialog: false,
       valid: true,
       name: "",
       nameRules: [
@@ -45,9 +46,15 @@ export default {
     };
   },
   computed: {
-    dialog() {
-      return this.$store.getters.connected;
+    username() {
+      return this.$store.getters.name;
     }
+    // dialog() {
+    //   return this.$store.getters.hasName;
+    // }
+  },
+  created() {
+    this.dialog = this.$store.getters.name == null ? true : false;
   },
   methods: {
     submit() {

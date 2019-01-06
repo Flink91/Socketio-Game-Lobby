@@ -7,8 +7,11 @@ const state = {
 };
 
 const getters = {
-  user(state) {
-    return state.user;
+  conncected(state) {
+    return state.connected;
+  },
+  name(state) {
+    return state.name;
   }
 };
 
@@ -18,6 +21,11 @@ const mutations = {
   },
   SOCKET_DISCONNECT(state) {
     state.connected = false;
+  },
+  SOCKET_ON_NEW_USER(state, user) {
+    state.name = user.username;
+    state.color = user.color;
+    alert("hi from store!" + state.name);
   },
   setUser(state, payload) {
     state.user = payload;
