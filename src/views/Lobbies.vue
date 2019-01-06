@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import io from "socket.io-client";
 import JoinModal from "@/components/JoinModal.vue";
 import LobbyList from "@/components/LobbyList.vue";
 
@@ -40,8 +39,7 @@ export default {
     return {
       username: "",
       color: "",
-      users: [],
-      socket: io("localhost:3001")
+      users: []
     };
   },
   computed: {
@@ -53,6 +51,14 @@ export default {
       }
     }
   },
+  sockets: {
+    connect: function() {
+      alert("socket connected");
+    },
+    ON_NEW_USER: function(data) {
+      this.users = [...this.users, data];
+    }
+  },
   methods: {
     newUser(name, color) {
       this.username = name;
@@ -60,7 +66,7 @@ export default {
       this.sendNewUser();
     },
     sendNewUser() {
-      this.socket.emit("SEND_NEW_USER", {
+      this.$socket.emit("SEND_NEW_USER", {
         username: this.username,
         color: this.color
       });
@@ -68,7 +74,7 @@ export default {
     }
   },
   mounted() {
-    this.socket.on("ON_NEW_USER", data => {
+    this.$socket.on("ON_NEW_USER", data => {
       this.users = [...this.users, data];
       // you can also do this.messages.push(data)
     });

@@ -33,8 +33,6 @@
 export default {
   data() {
     return {
-      dialog: true,
-
       valid: true,
       name: "",
       nameRules: [
@@ -46,11 +44,15 @@ export default {
       checkbox: false
     };
   },
+  computed: {
+    dialog() {
+      return this.$store.getters.connected;
+    }
+  },
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
         this.$emit("newUser", this.name, this.color);
-
         this.clear();
         this.dialog = false;
       }

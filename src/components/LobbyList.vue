@@ -49,19 +49,19 @@ export default {
       items: [
         // { header: "Today" },
         {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          avatar: require("@/assets/1.jpg"),
           title: "Normal Game 1/2",
           subtitle: "Extra info"
         },
         { divider: true, inset: true },
         {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+          avatar: require("@/assets/1.jpg"),
           title: "Normal Game 2/8",
           subtitle: "Extra info"
         },
         { divider: true, inset: true },
         {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+          avatar: require("@/assets/1.jpg"),
           title: "Private Game 1/4",
           subtitle: "Additional info"
         }

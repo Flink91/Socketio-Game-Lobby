@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
+    "node-uuid": "^1.4.8",
     "socketio": "^1.0.0"
   }
 }

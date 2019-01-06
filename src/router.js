@@ -26,6 +26,11 @@ export default new Router({
       name: "lobby",
       component: () =>
         import(/* webpackChunkName: "lobby" */ "./views/Lobby.vue")
+    },
+    {
+      path: "/game",
+      name: "game",
+      component: () => import(/* webpackChunkName: "game" */ "./views/Game.vue")
     }
   ]
 });
