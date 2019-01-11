@@ -13,6 +13,9 @@ const getters = {
   },
   name(state) {
     return state.name;
+  },
+  rooms(state) {
+    return state.rooms
   }
 };
 
@@ -42,7 +45,13 @@ const mutations = {
   SOCKET_UPDATE_ROOMS(state, message) {
     // eslint-disable-next-line
     console.log("%c socket_update_rooms" + message, "color:green");
-    state.rooms = message.rooms;
+    let newRooms = [];
+    for (let key in message) {
+      // skip loop if the property is from prototype
+      if (!message.hasOwnProperty(key)) continue;
+      newRooms.push(message[key]);
+    }
+    state.rooms = newRooms;
   },
   setUser(state, payload) {
     state.user = payload;

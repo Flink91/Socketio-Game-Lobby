@@ -35,12 +35,13 @@ io.on("connection", function (socket) {
     socket.emit("UPDATE_ROOMS", rooms);
 
     //HOST A ROOM
-    socket.on("HOST", function (readableName, callback) {
+    socket.on("HOST", function (readableName, size, isPrivate, callback) {
       // create new room ID on host
       var newRoomID = uuid.v4();
-      if (connectClientToRoom(newRoomID, socket.id, true, readableName)) {
+      if (connectClientToRoom(newRoomID, socket.id, true, readableName, size, isPrivate)) {
         callback(newRoomID);
       }
+      socket.emit("UPDATE_ROOMS", rooms);
     });
 
     //JOIN A ROOM
@@ -96,7 +97,7 @@ io.on("connection", function (socket) {
       return null;
     }
 
-    function connectClientToRoom(roomID, clientID, isHost, readableName) {
+    function connectClientToRoom(roomID, clientID, isHost, readableName, size, isPrivate) {
       // if the client is already a host, or already connected to a room
       if (clients[clientID].isHost || clients[clientID].room) {
         return false;
@@ -108,12 +109,12 @@ io.on("connection", function (socket) {
           clients[socket.id].room = roomID;
 
           if (isHost) {
-            rooms[roomID] = new Room(roomID, clients[clientID], readableName);
+            rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, isPrivate);
             console.log(
               clients[clientID].name +
               " has created room: " +
-              rooms[roomID].readableName
-            );
+              rooms[roomID].readableName + " with size: " + size + " and private?: " + isPrivate);
+
           } else {
             rooms[roomID].addClient(clients[clientID]);
             console.log(

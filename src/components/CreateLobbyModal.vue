@@ -4,13 +4,13 @@
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
         <v-card-title>
-          <span class="headline">New Lobby</span>
+          <span class="headline">New Room</span>
         </v-card-title>
         <v-card-text>
           <v-container grid-list xs-12>
             <v-layout wrap>
               <v-form ref="form" v-model="valid" lazy-validation class="join-form">
-                <v-subheader class="pl-0">Lobby name</v-subheader>
+                <v-subheader class="pl-0">Room name</v-subheader>
                 <v-text-field
                   v-model="roomName"
                   :rules="nameRules"
@@ -18,7 +18,7 @@
                   label="Name"
                   required
                 ></v-text-field>
-                <v-subheader class="pl-0">Lobby size</v-subheader>
+                <v-subheader class="pl-0">Room size</v-subheader>
                 <v-slider v-model="slider" thumb-label="always" :max="8" :min="2"></v-slider>
                 <v-checkbox v-model="privateCheckbox" label="Make this Lobby private?" required></v-checkbox>
 
@@ -58,11 +58,17 @@ export default {
     },
     sendHost() {
       let self = this;
-      this.$socket.emit("HOST", this.roomName, function(roomId) {
-        self.clear();
-        self.dialog = false;
-        self.$router.push({ name: "lobby", params: { roomId: roomId } });
-      });
+      this.$socket.emit(
+        "HOST",
+        this.roomName,
+        this.slider,
+        this.privateCheckbox,
+        function(roomId) {
+          self.clear();
+          self.dialog = false;
+          self.$router.push({ name: "lobby", params: { roomId: roomId } });
+        }
+      );
       // this.color = ''
     },
     clear() {

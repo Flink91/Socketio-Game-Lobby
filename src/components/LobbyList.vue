@@ -3,7 +3,7 @@
     <v-flex xs12>
       <v-card>
         <v-toolbar color="white">
-          <v-toolbar-title>Lobbies</v-toolbar-title>
+          <v-toolbar-title>Rooms</v-toolbar-title>
 
           <v-spacer></v-spacer>
 
@@ -11,27 +11,27 @@
             <v-icon>search</v-icon>
           </v-btn>-->
           <v-btn icon>
-            <v-icon @click="showCreateLobbyModal = true">add</v-icon>
+            <v-icon @click="showCreateRoomModal = !showCreateRoomModal">add</v-icon>
           </v-btn>
         </v-toolbar>
-        <app-create-lobby-modal :show="showCreateLobbyModal"/>
+        <app-create-lobby-modal :show="showCreateRoomModal"/>
 
         <v-list two-line>
-          <template v-for="(item, index) in items">
-            <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
+          <template v-for="(room, index) in rooms">
+            <v-subheader v-if="room.header" :key="room.header">{{ room.header }}</v-subheader>
 
-            <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
+            <v-divider :key="index"></v-divider>
 
-            <v-list-tile v-else :key="item.title" avatar>
+            <v-list-tile :key="room.readableName" avatar>
               <v-list-tile-avatar>
-                <img :src="item.avatar">
+                <img src="@/assets/1.jpg">
               </v-list-tile-avatar>
 
               <v-list-tile-content>
-                <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+                <v-list-tile-title>{{room.readableName}} (Host: {{room.clients[0].name}})</v-list-tile-title>
+                <v-list-tile-sub-title>{{room.clients.length}}/{{room.size}}</v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-btn @click="joinRoom(item.roomID)">Join</v-btn>
+              <v-btn @click="joinRoom(room.roomID)">Join</v-btn>
             </v-list-tile>
           </template>
         </v-list>
@@ -45,35 +45,17 @@ import CreateLobbyModal from "@/components/CreateLobbyModal.vue";
 export default {
   data() {
     return {
-      showCreateLobbyModal: false,
-      items: [
-        // { header: "Today" },
-        {
-          avatar: require("@/assets/1.jpg"),
-          title: "Normal Game 1/2",
-          roomID: "1234-5678-9101-11213",
-          subtitle: "Extra info"
-        },
-        { divider: true, inset: true },
-        {
-          avatar: require("@/assets/1.jpg"),
-          title: "Normal Game 2/8",
-          roomID: "1234-5678-9101-11213",
-          subtitle: "Extra info"
-        },
-        { divider: true, inset: true },
-        {
-          avatar: require("@/assets/1.jpg"),
-          title: "Private Game 1/4",
-          roomID: "1234-5678-9101-11213",
-          subtitle: "Additional info"
-        }
-      ]
+      showCreateRoomModal: false
     };
+  },
+  computed: {
+    rooms() {
+      return this.$store.getters.rooms;
+    }
   },
   methods: {
     joinRoom(roomID) {
-      alert("joining game " + roomID);
+      alert("joining game (todo)" + roomID);
     }
   },
   components: {
