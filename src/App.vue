@@ -1,12 +1,13 @@
 <template>
   <v-app>
     <v-toolbar app>
-      <router-link to="/">
-        <v-toolbar-title class="headline text-uppercase">
+      <v-toolbar-title class="headline text-uppercase">
+        <router-link to="/">
           <span>SocketIO</span>
           <span class="font-weight-light">Game Lobby</span>
-        </v-toolbar-title>
-      </router-link>
+        </router-link>
+      </v-toolbar-title>
+
       <v-spacer></v-spacer>
       <v-btn flat href="https://github.com/Flink91/Socketio-Game-Lobby" target="_blank">
         <span class="mr-2">Latest Release</span>

@@ -7,7 +7,7 @@ const express = require("express");
 
 const app = express();
 
-const server = app.listen(3001, function() {
+const server = app.listen(3001, function () {
   console.log("server running on port 3001");
 });
 
@@ -16,9 +16,11 @@ var clients = {};
 
 const io = require("socket.io")(server);
 
-io.on("connection", function(socket) {
+io.on("connection", function (socket) {
   console.log("New connection: " + socket.id);
-  socket.on("SEND_NEW_USER", function(data) {
+
+
+  socket.on("NEW_USER", function (data) {
     console.log(
       socket.id + "is now known as: " + data.username + " (" + data.color + ")"
     );
@@ -29,10 +31,11 @@ io.on("connection", function(socket) {
       null,
       null
     );
-    socket.emit("ON_NEW_USER", data);
+    socket.emit("NEW_USER", data);
     socket.emit("UPDATE_ROOMS", rooms);
 
-    socket.on("host", function(data, readableName, callback) {
+    //HOST A ROOM
+    socket.on("HOST", function (readableName, callback) {
       // create new room ID on host
       var newRoomID = uuid.v4();
       if (connectClientToRoom(newRoomID, socket.id, true, readableName)) {
@@ -40,7 +43,8 @@ io.on("connection", function(socket) {
       }
     });
 
-    socket.on("join", function(roomID, callback) {
+    //JOIN A ROOM
+    socket.on("JOIN", function (roomID, callback) {
       // join existing room
       if (connectClientToRoom(roomID, socket.id, false)) {
         callback(roomID);
@@ -51,7 +55,7 @@ io.on("connection", function(socket) {
     //Room specific socket actions here
     //
 
-    socket.on("chatMessage", function(msg) {
+    socket.on("chatMessage", function (msg) {
       // find out which room the client is in
       var room = findRoomByID(socket.id, rooms);
 
@@ -60,7 +64,7 @@ io.on("connection", function(socket) {
         .emit("addChatMessage", msg, socket.id, clients[socket.id].color);
     });
 
-    socket.on("create_game", function(hostID) {
+    socket.on("create_game", function (hostID) {
       //find room of host
       var room = findRoomByID(hostID, rooms);
 
@@ -98,7 +102,7 @@ io.on("connection", function(socket) {
         return false;
       }
 
-      socket.join(roomID, function(err) {
+      socket.join(roomID, function (err) {
         if (!err) {
           clients[socket.id].isHost = isHost;
           clients[socket.id].room = roomID;
@@ -107,15 +111,15 @@ io.on("connection", function(socket) {
             rooms[roomID] = new Room(roomID, clients[clientID], readableName);
             console.log(
               clients[clientID].name +
-                " has created room: " +
-                rooms[roomID].readableName
+              " has created room: " +
+              rooms[roomID].readableName
             );
           } else {
             rooms[roomID].addClient(clients[clientID]);
             console.log(
               clients[clientID].name +
-                " has joined room: " +
-                rooms[roomID].readableName
+              " has joined room: " +
+              rooms[roomID].readableName
             );
           }
 

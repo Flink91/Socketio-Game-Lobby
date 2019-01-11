@@ -24,7 +24,7 @@
         </div>
         <div class="card-footer"></div>
 
-        <app-join-modal @newUser="newUser"/>
+        <app-join-modal @NEWUSER="newUserFromModal"/>
       </div>
     </v-flex>
   </v-layout>
@@ -53,18 +53,18 @@ export default {
   },
   sockets: {
     connect: function() {},
-    ON_NEW_USER: function(data) {
+    NEW_USER: function(data) {
       this.users = [...this.users, data];
     }
   },
   methods: {
-    newUser(name, color) {
+    newUserFromModal(name, color) {
       this.username = name;
       this.color = color;
       this.sendNewUser();
     },
     sendNewUser() {
-      this.$socket.emit("SEND_NEW_USER", {
+      this.$socket.emit("NEW_USER", {
         username: this.username,
         color: this.color
       });
@@ -72,7 +72,7 @@ export default {
     }
   },
   mounted() {
-    this.$socket.on("ON_NEW_USER", data => {
+    this.$socket.on("NEW_USER", data => {
       this.users = [...this.users, data];
       // you can also do this.messages.push(data)
     });

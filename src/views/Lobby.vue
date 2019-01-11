@@ -95,7 +95,7 @@ export default {
       this.sendNewUser();
     },
     sendNewUser() {
-      this.socket.emit("SEND_NEW_USER", {
+      this.$socket.emit("NEW_USER", {
         username: this.username,
         color: this.color
       });
@@ -103,7 +103,7 @@ export default {
     }
   },
   mounted() {
-    this.socket.on("ON_NEW_USER", data => {
+    this.$socket.on("NEW_USER", data => {
       this.users = [...this.users, data];
       // you can also do this.messages.push(data)
     });

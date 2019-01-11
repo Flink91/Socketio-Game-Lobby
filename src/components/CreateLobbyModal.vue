@@ -11,7 +11,13 @@
             <v-layout wrap>
               <v-form ref="form" v-model="valid" lazy-validation class="join-form">
                 <v-subheader class="pl-0">Lobby name</v-subheader>
-                <v-text-field v-model="name" :rules="nameRules" :counter="30" label="Name" required></v-text-field>
+                <v-text-field
+                  v-model="roomName"
+                  :rules="nameRules"
+                  :counter="30"
+                  label="Name"
+                  required
+                ></v-text-field>
                 <v-subheader class="pl-0">Lobby size</v-subheader>
                 <v-slider v-model="slider" thumb-label="always" :max="8" :min="2"></v-slider>
                 <v-checkbox v-model="privateCheckbox" label="Make this Lobby private?" required></v-checkbox>
@@ -34,7 +40,7 @@ export default {
       dialog: this.show,
 
       valid: true,
-      name: "",
+      roomName: "",
       nameRules: [
         v => !!v || "Name is required",
         v => (v && v.length <= 30) || "Name must be less than 30 characters"
@@ -46,13 +52,18 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.$emit("newLobby", this.name, this.slider, this.privateCheckbox);
-
-        //TODO: Make sure this worked on the server
-        this.$router.push({ name: "lobby", params: { lobbyId: "12345" } });
-        this.clear();
-        this.dialog = false;
+        //this.$emit("newLobby", this.name, this.slider, this.privateCheckbox);
+        this.sendHost();
       }
+    },
+    sendHost() {
+      let self = this;
+      this.$socket.emit("HOST", this.roomName, function(roomId) {
+        self.clear();
+        self.dialog = false;
+        self.$router.push({ name: "lobby", params: { roomId: roomId } });
+      });
+      // this.color = ''
     },
     clear() {
       this.$refs.form.reset();

@@ -59,7 +59,7 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.$emit("newUser", this.name, this.color);
+        this.$emit("NEWUSER", this.name, this.color);
         this.clear();
         this.dialog = false;
       }

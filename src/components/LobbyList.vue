@@ -31,7 +31,7 @@
                 <v-list-tile-title v-html="item.title"></v-list-tile-title>
                 <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-btn to="lobby">Join</v-btn>
+              <v-btn @click="joinRoom(item.roomID)">Join</v-btn>
             </v-list-tile>
           </template>
         </v-list>
@@ -51,22 +51,30 @@ export default {
         {
           avatar: require("@/assets/1.jpg"),
           title: "Normal Game 1/2",
+          roomID: "1234-5678-9101-11213",
           subtitle: "Extra info"
         },
         { divider: true, inset: true },
         {
           avatar: require("@/assets/1.jpg"),
           title: "Normal Game 2/8",
+          roomID: "1234-5678-9101-11213",
           subtitle: "Extra info"
         },
         { divider: true, inset: true },
         {
           avatar: require("@/assets/1.jpg"),
           title: "Private Game 1/4",
+          roomID: "1234-5678-9101-11213",
           subtitle: "Additional info"
         }
       ]
     };
+  },
+  methods: {
+    joinRoom(roomID) {
+      alert("joining game " + roomID);
+    }
   },
   components: {
     "app-create-lobby-modal": CreateLobbyModal
