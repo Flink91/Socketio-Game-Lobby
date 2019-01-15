@@ -68,8 +68,8 @@ const mutations = {
     state.room = message.room;
   },
   //this shall replace host and join
-  SOCKET_GET_ROOM_INFO() {
-
+  SOCKET_GET_ROOM_INFO(state, message) {
+    state.room = message;
   },
   SOCKET_UPDATE_ROOMS(state, message) {
     // eslint-disable-next-line

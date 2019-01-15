@@ -2,27 +2,29 @@
   <v-container>
     <v-layout row wrap>
       <v-flex xs12 sm8 md10>
-        <v-card>
-          <v-card-title>{{room}}</v-card-title>
-
+        <h3 class="title my-3 mx-0">Room: {{room.readableName}}</h3>
+        <div>
           <v-spacer></v-spacer>
 
-          <v-timeline dense clipped class="timeline mt-3 mx-3">
-            <v-timeline-item class="mb-3" color="grey" icon-color="grey lighten-2" small>
-              <v-layout justify-space-between>
-                <v-flex xs7>Welcome to this Lobby! You can chat here.</v-flex>
-                <v-flex xs5 text-xs-right>15:26</v-flex>
-              </v-layout>
-            </v-timeline-item>
-          </v-timeline>
-
-          <v-card-actions>
-            <v-form ref="form" lazy-validation class="chatMessage-form">
-              <v-text-field v-model="chatMessage" label="type here" class="px-3" required></v-text-field>
-              <v-btn :disabled="!valid" @click="submit">Send</v-btn>
-            </v-form>
-          </v-card-actions>
-        </v-card>
+          <ul class="messages" v-chat-scroll="{always: false, smooth: true}">
+            <li class="message" v-for="(m, index) in messages" :key="index">
+              <span class="font-weight-bold" v-bind:style="{ color: m.color }">{{ m.name }}</span>
+              : {{m.message}}
+            </li>
+          </ul>
+        </div>
+        <v-form class="chatMessage-form">
+          <v-text-field
+            v-model="chatMessage"
+            append-icon="send"
+            box
+            label="type here"
+            type="text"
+            @keydown.enter="submit"
+            @click:append="submit"
+            class="myInput mb-0"
+          ></v-text-field>
+        </v-form>
       </v-flex>
 
       <v-flex xs12 sm4 md2>
@@ -32,13 +34,12 @@
               <h3>People in Lobby:</h3>
             </div>
             <div class="card-body">
-              <div class="users" v-for="(msg, index) in last5Users" :key="index">
-                <p v-bind:style="{ color: msg.color }" class="new-user">
+              <div class="users" v-for="(client, index) in room.clients" :key="index">
+                <p v-bind:style="{ color: client.color }" class="new-user">
                   <span
                     class="font-weight-bold"
-                    v-bind:style="{ color: msg.color }"
-                  >{{ msg.username }} connected</span>
-                  ({{ msg.color }})
+                    v-bind:style="{ color: client.color }"
+                  >{{ client.name }}</span>
                 </p>
               </div>
             </div>
@@ -53,13 +54,7 @@
             </div>
             <div class="card-body">
               <div class="users" v-for="(msg, index) in last5Users" :key="index">
-                <p v-bind:style="{ color: msg.color }" class="new-user">
-                  <span
-                    class="font-weight-bold"
-                    v-bind:style="{ color: msg.color }"
-                  >{{ msg.username }} connected</span>
-                  ({{ msg.color }})
-                </p>
+                <p class="new-user">//Todo</p>
               </div>
             </div>
           </div>
@@ -92,14 +87,17 @@ export default {
     },
     room() {
       return this.$store.getters.room;
+    },
+    messages() {
+      return this.$store.getters.messages;
     }
   },
   methods: {
     submit(e) {
       e.preventDefault();
-      alert(this.chatMessage);
 
-      this.$socket.in(this.room.id).emit("SEND_MESSAGE", {
+      //Room ID not needed, the Server will look for the ID via socket.id of Sender
+      this.$socket.emit("SEND_MESSAGE", {
         name: this.username,
         message: this.chatMessage
       });
@@ -120,8 +118,17 @@ export default {
 .new-user {
   margin-bottom: 4px;
 }
-.timeline {
-  min-height: 300px;
+.messages {
+  height: 250px;
+  list-style: none;
+  padding: 12px;
+  overflow: scroll;
+  overflow-x: auto;
+}
+
+.message {
+  padding: 2px 0px;
+  text-decoration: none;
 }
 .chatMessage-form {
   width: 100%;

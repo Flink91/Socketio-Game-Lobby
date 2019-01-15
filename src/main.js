@@ -5,6 +5,9 @@ import App from "./App.vue";
 import VueSocketIO from "vue-socket.io";
 import router from "./router";
 
+import VueChatScroll from 'vue-chat-scroll'
+Vue.use(VueChatScroll)
+
 Vue.config.productionTip = false;
 
 Vue.use(

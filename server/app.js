@@ -56,14 +56,13 @@ io.on("connection", function (socket) {
     //
 
     socket.on("SEND_MESSAGE", function (msg) {
-      console.log("message recieved");
       // find out which room the client is in
+      msg.color = clients[socket.id].color;
       var room = findRoomByID(socket.id, rooms);
-      console.log("New message in room " + room.readableName + ": " + msg.message);
-
+      // console.log("New message in room " + room.readableName + ": " + msg.message);
       io.sockets
         .in(room.id)
-        .emit("CHAT_MESSAGE", msg, socket.id, clients[socket.id].color);
+        .emit("CHAT_MESSAGE", msg);
     });
 
     socket.on("create_game", function (hostID) {
