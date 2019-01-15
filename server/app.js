@@ -115,7 +115,6 @@ io.on("connection", function (socket) {
               clients[clientID].name +
               " has created room: " +
               rooms[roomID].readableName + " with size: " + size + " and private?: " + isPrivate);
-            io.sockets.emit("HOST", rooms);
           } else {
             rooms[roomID].addClient(clients[clientID]);
             console.log(
