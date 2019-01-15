@@ -31,8 +31,8 @@ io.on("connection", function (socket) {
       null,
       null
     );
-    socket.emit("NEW_USER", data);
-    socket.emit("UPDATE_ROOMS", rooms);
+    io.emit("NEW_USER", data);
+    io.emit("UPDATE_ROOMS", rooms);
 
     //HOST A ROOM
     socket.on("HOST", function (readableName, size, isPrivate, callback) {
@@ -41,7 +41,6 @@ io.on("connection", function (socket) {
       if (connectClientToRoom(newRoomID, socket.id, true, readableName, size, isPrivate)) {
         callback(newRoomID);
       }
-      socket.emit("UPDATE_ROOMS", rooms);
     });
 
     //JOIN A ROOM
@@ -56,13 +55,15 @@ io.on("connection", function (socket) {
     //Room specific socket actions here
     //
 
-    socket.on("chatMessage", function (msg) {
+    socket.on("SEND_MESSAGE", function (msg) {
+      console.log("message recieved");
       // find out which room the client is in
       var room = findRoomByID(socket.id, rooms);
+      console.log("New message in room " + room.readableName + ": " + msg.message);
 
       io.sockets
         .in(room.id)
-        .emit("addChatMessage", msg, socket.id, clients[socket.id].color);
+        .emit("CHAT_MESSAGE", msg, socket.id, clients[socket.id].color);
     });
 
     socket.on("create_game", function (hostID) {
@@ -114,7 +115,7 @@ io.on("connection", function (socket) {
               clients[clientID].name +
               " has created room: " +
               rooms[roomID].readableName + " with size: " + size + " and private?: " + isPrivate);
-
+            io.sockets.emit("HOST", rooms);
           } else {
             rooms[roomID].addClient(clients[clientID]);
             console.log(
@@ -124,7 +125,7 @@ io.on("connection", function (socket) {
             );
           }
 
-          io.sockets.emit("update_rooms", rooms);
+          io.sockets.emit("UPDATE_ROOMS", rooms);
           getPeopleInRoom(clientID, roomID);
         } else {
           // handle error message
@@ -138,7 +139,7 @@ io.on("connection", function (socket) {
     function getPeopleInRoom(clientID) {
       var room = findRoomByID(clientID, rooms);
       if (room != null) {
-        io.sockets.in(room.id).emit("get_room_info", room);
+        io.sockets.in(room.id).emit("GET_ROOM_INFO", room);
       }
     }
   });

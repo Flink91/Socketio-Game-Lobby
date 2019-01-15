@@ -49,9 +49,6 @@ export default {
     username() {
       return this.$store.getters.name;
     }
-    // dialog() {
-    //   return this.$store.getters.hasName;
-    // }
   },
   created() {
     this.dialog = this.$store.getters.name == null ? true : false;
@@ -59,7 +56,10 @@ export default {
   methods: {
     submit() {
       if (this.$refs.form.validate()) {
-        this.$emit("NEWUSER", this.name, this.color);
+        this.$socket.emit("NEW_USER", {
+          username: this.name,
+          color: this.color
+        });
         this.clear();
         this.dialog = false;
       }

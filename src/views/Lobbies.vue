@@ -1,38 +1,40 @@
 <template>
-  <v-layout>
-    <v-flex xs12 sm8 md10 my-3 mx-3>
-      <app-lobby-list/>
-    </v-flex>
+  <v-container>
+    <v-layout row wrap>
+      <v-flex xs12 sm8 md10>
+        <app-room-list/>
+      </v-flex>
 
-    <v-flex my-3 mx-3>
-      <div class="new-users-card py-3 px-3">
-        <div class="new-users-card-body">
-          <div class="new-users-card-title">
-            <h3>People joining:</h3>
-          </div>
-          <div class="card-body">
-            <div class="users" v-for="(msg, index) in lastUsers" :key="index">
-              <p v-bind:style="{ color: msg.color }" class="new-user">
-                <span
-                  class="font-weight-bold"
-                  v-bind:style="{ color: msg.color }"
-                >{{ msg.username }} connected</span>
-                ({{ msg.color }})
-              </p>
+      <v-flex xs12 sm4 md2>
+        <div class="new-users-card py-3 px-3">
+          <div class="new-users-card-body">
+            <div class="new-users-card-title">
+              <h3>People joining:</h3>
+            </div>
+            <div class="card-body">
+              <div class="users" v-for="(msg, index) in last5Users" :key="index">
+                <p v-bind:style="{ color: msg.color }" class="new-user">
+                  <span
+                    class="font-weight-bold"
+                    v-bind:style="{ color: msg.color }"
+                  >{{ msg.username }} connected</span>
+                  ({{ msg.color }})
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card-footer"></div>
+          <div class="card-footer"></div>
 
-        <app-join-modal @NEWUSER="newUserFromModal"/>
-      </div>
-    </v-flex>
-  </v-layout>
+          <app-join-modal/>
+        </div>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
 import JoinModal from "@/components/JoinModal.vue";
-import LobbyList from "@/components/LobbyList.vue";
+import RoomList from "@/components/RoomList.vue";
 
 export default {
   data() {
@@ -43,43 +45,33 @@ export default {
     };
   },
   computed: {
-    lastUsers() {
-      if (this.users.length <= 5) {
-        return this.users;
-      } else {
-        return this.users.slice(-5);
-      }
+    // lastUsers() {
+    //   if (this.users.length <= 5) {
+    //     return this.users;
+    //   } else {
+    //     return this.users.slice(-5);
+    //   }
+    // },
+    last5Users() {
+      return this.$store.getters.last5Users;
     }
   },
   sockets: {
-    connect: function() {},
-    NEW_USER: function(data) {
-      this.users = [...this.users, data];
-    }
+    // This place is useful when not using Vuex
+    connect: function() {}
   },
-  methods: {
-    newUserFromModal(name, color) {
-      this.username = name;
-      this.color = color;
-      this.sendNewUser();
-    },
-    sendNewUser() {
-      this.$socket.emit("NEW_USER", {
-        username: this.username,
-        color: this.color
-      });
-      // this.color = ''
-    }
-  },
+  methods: {},
   mounted() {
     this.$socket.on("NEW_USER", data => {
+      // eslint-disable-next-line
+      console.log("hi" + data);
       this.users = [...this.users, data];
       // you can also do this.messages.push(data)
     });
   },
   components: {
     "app-join-modal": JoinModal,
-    "app-lobby-list": LobbyList
+    "app-room-list": RoomList
   }
 };
 </script>

@@ -14,7 +14,7 @@
             <v-icon @click="showCreateRoomModal = !showCreateRoomModal">add</v-icon>
           </v-btn>
         </v-toolbar>
-        <app-create-lobby-modal :show="showCreateRoomModal"/>
+        <app-create-room-modal :show="showCreateRoomModal"/>
 
         <v-list two-line>
           <template v-for="(room, index) in rooms">
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import CreateLobbyModal from "@/components/CreateLobbyModal.vue";
+import CreateRoomModal from "@/components/CreateRoomModal.vue";
 export default {
   data() {
     return {
@@ -59,7 +59,7 @@ export default {
     }
   },
   components: {
-    "app-create-lobby-modal": CreateLobbyModal
+    "app-create-room-modal": CreateRoomModal
   }
 };
 </script>
