@@ -46,12 +46,17 @@ const mutations = {
   SOCKET_DISCONNECT(state) {
     state.connected = false;
   },
-  SOCKET_NEW_USER(state, user) {
-    state.users.push(user);
+  SOCKET_JOINED_SERVER(state, user) {
     // eslint-disable-next-line
-    console.log("%c socket_on_new_user", "color:green");
+    console.log("%c socket_on_joined_server", "color:green");
     state.name = user.username;
     state.color = user.color;
+  },
+  SOCKET_NEW_USER(state, user) {
+    // eslint-disable-next-line
+    console.log("%c socket_on_new_user", "color:green");
+    state.users.push(user);
+
   },
   SOCKET_HOST(state, message) {
     // eslint-disable-next-line

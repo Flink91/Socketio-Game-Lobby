@@ -31,7 +31,7 @@
                 <v-list-tile-title>{{room.readableName}} (Host: {{room.clients[0].name}})</v-list-tile-title>
                 <v-list-tile-sub-title>{{room.clients.length}}/{{room.size}}</v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-btn @click="joinRoom(room.roomID)">Join</v-btn>
+              <v-btn @click="joinRoom(room.id)">Join</v-btn>
             </v-list-tile>
           </template>
         </v-list>
@@ -55,7 +55,13 @@ export default {
   },
   methods: {
     joinRoom(roomID) {
-      alert("joining game (todo)" + roomID);
+      let self = this;
+      if (roomID == null || roomID == undefined) {
+        alert("something went wrong...");
+      }
+      this.$socket.emit("JOIN", roomID, function() {
+        self.$router.push({ name: "lobby", params: { roomID: roomID } });
+      });
     }
   },
   components: {

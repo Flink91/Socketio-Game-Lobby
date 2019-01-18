@@ -21,8 +21,8 @@ export default new Router({
         import( /* webpackChunkName: "about" */ "./views/About.vue")
     },
     {
-      params: ['roomId'],
-      path: "/lobby/:roomId",
+      params: ['roomID'],
+      path: "/lobby/:roomID",
       name: "lobby",
       component: () =>
         import( /* webpackChunkName: "lobby" */ "./views/Lobby.vue")

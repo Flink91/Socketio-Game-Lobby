@@ -1,4 +1,4 @@
-var Room = function (id, client, readableName, size, isPrivate) {
+function Room(id, client, readableName, size, isPrivate) {
   this.id = id;
   this.readableName = readableName;
   this.hostID = client.id;
@@ -6,7 +6,7 @@ var Room = function (id, client, readableName, size, isPrivate) {
   this.size = size;
   this.isPrivate = isPrivate;
   this.addClient(client);
-};
+}
 
 Room.prototype.addClient = function (client) {
   this.clients.push(client);

@@ -63,10 +63,10 @@ export default {
         this.roomName,
         this.slider,
         this.privateCheckbox,
-        function(roomId) {
+        function(roomID) {
           self.clear();
           self.dialog = false;
-          self.$router.push({ name: "lobby", params: { roomId: roomId } });
+          self.$router.push({ name: "lobby", params: { roomID: roomID } });
         }
       );
       // this.color = ''
