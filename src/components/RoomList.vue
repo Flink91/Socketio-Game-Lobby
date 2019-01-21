@@ -59,7 +59,9 @@ export default {
       if (roomID == null || roomID == undefined) {
         alert("something went wrong...");
       }
-      this.$socket.emit("JOIN", roomID, function() {
+      this.$socket.emit("JOIN", roomID, function(hmm) {
+        // eslint-disable-next-line
+        console.log("hiu" + hmm);
         self.$router.push({ name: "lobby", params: { roomID: roomID } });
       });
     }

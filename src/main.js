@@ -5,6 +5,8 @@ import App from "./App.vue";
 import VueSocketIO from "vue-socket.io";
 import router from "./router";
 
+import Alert from "./components/shared/Alert.vue"
+
 import VueChatScroll from 'vue-chat-scroll'
 Vue.use(VueChatScroll)
 
@@ -22,8 +24,13 @@ Vue.use(
   })
 );
 
+Vue.component('app-alert', Alert)
+
 new Vue({
   store,
   router,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    this.$store.commit('setLoading', false);
+  }
 }).$mount("#app");

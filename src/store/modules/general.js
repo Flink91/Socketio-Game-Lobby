@@ -21,11 +21,18 @@ const mutations = {
   },
   clearError(state) {
     state.error = null;
-  }
+  },
+  SOCKET_ERROR(state, msg) {
+    // eslint-disable-next-line
+    console.log("%c socket_error", "color:green");
+    state.error = msg;
+  },
 };
 
 const actions = {
-  clearError({ commit }) {
+  clearError({
+    commit
+  }) {
     commit("clearError");
   }
 };

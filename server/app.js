@@ -104,7 +104,20 @@ io.on("connection", function (socket) {
   function connectClientToRoom(roomID, clientID, isHost, readableName, size, isPrivate) {
     // if the client is already a host, or already connected to a room
     if (clients[clientID].isHost || clients[clientID].room) {
+      socket.emit("ERROR", {
+        message: "You are already connected to a room"
+      });
       return false;
+    }
+
+    // if room exists and is full
+    if (rooms[roomID]) {
+      if (rooms[roomID].size <= rooms[roomID].clients.length) {
+        socket.emit("ERROR", {
+          message: "This room is full"
+        });
+        return false;
+      }
     }
 
     socket.join(roomID, function (err) {
@@ -118,16 +131,14 @@ io.on("connection", function (socket) {
             rooms[roomID].readableName + " with size: " + size + " and private?: " + isPrivate);
         } else {
 
-          // if room is full
-          if (rooms[roomID].size <= rooms[roomID].clients.length) {
-            return false;
-          }
+
           rooms[roomID].addClient(clients[clientID]);
           console.log(
             clients[clientID].name +
             " has joined room: " +
             rooms[roomID].readableName
           );
+
         }
 
         io.sockets.emit("UPDATE_ROOMS", rooms);

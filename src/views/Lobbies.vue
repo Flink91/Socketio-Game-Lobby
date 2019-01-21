@@ -1,35 +1,44 @@
 <template>
-  <v-container>
-    <v-layout row wrap>
-      <v-flex xs12 sm8 md10>
-        <app-room-list/>
-      </v-flex>
+  <div>
+    <v-slide-y-transition>
+      <v-layout row v-if="error">
+        <v-flex xs12>
+          <app-alert :text="error.message" :type="'error'"></app-alert>
+        </v-flex>
+      </v-layout>
+    </v-slide-y-transition>
+    <v-container>
+      <v-layout row wrap>
+        <v-flex xs12 sm8 md10>
+          <app-room-list/>
+        </v-flex>
 
-      <v-flex xs12 sm4 md2>
-        <div class="new-users-card py-3 px-3">
-          <div class="new-users-card-body">
-            <div class="new-users-card-title">
-              <h3>People joining:</h3>
-            </div>
-            <div class="card-body">
-              <div class="users" v-for="(msg, index) in last5Users" :key="index">
-                <p v-bind:style="{ color: msg.color }" class="new-user">
-                  <span
-                    class="font-weight-bold"
-                    v-bind:style="{ color: msg.color }"
-                  >{{ msg.username }} connected</span>
-                  ({{ msg.color }})
-                </p>
+        <v-flex xs12 sm4 md2>
+          <div class="new-users-card py-3 px-3">
+            <div class="new-users-card-body">
+              <div class="new-users-card-title">
+                <h3>People joining:</h3>
+              </div>
+              <div class="card-body">
+                <div class="users" v-for="(msg, index) in last5Users" :key="index">
+                  <p v-bind:style="{ color: msg.color }" class="new-user">
+                    <span
+                      class="font-weight-bold"
+                      v-bind:style="{ color: msg.color }"
+                    >{{ msg.username }} connected</span>
+                    ({{ msg.color }})
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="card-footer"></div>
+            <div class="card-footer"></div>
 
-          <app-join-modal/>
-        </div>
-      </v-flex>
-    </v-layout>
-  </v-container>
+            <app-join-modal/>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -45,13 +54,10 @@ export default {
     };
   },
   computed: {
-    // lastUsers() {
-    //   if (this.users.length <= 5) {
-    //     return this.users;
-    //   } else {
-    //     return this.users.slice(-5);
-    //   }
-    // },
+    error() {
+      window.scrollTo(0, 0);
+      return this.$store.getters.error;
+    },
     last5Users() {
       return this.$store.getters.last5Users;
     }

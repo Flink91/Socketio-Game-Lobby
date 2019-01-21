@@ -3,6 +3,14 @@
     <v-dialog :value="dialog" persistent max-width="600px">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
+        <v-slide-y-transition>
+          <v-layout row v-if="error">
+            <v-flex xs12>
+              <app-alert :text="error.message" :type="'error'"></app-alert>
+            </v-flex>
+          </v-layout>
+        </v-slide-y-transition>
+
         <v-card-title>
           <span class="headline">Pick a Name and a color!</span>
         </v-card-title>
@@ -48,6 +56,10 @@ export default {
   computed: {
     username() {
       return this.$store.getters.name;
+    },
+    error() {
+      window.scrollTo(0, 0);
+      return this.$store.getters.error;
     }
   },
   created() {
