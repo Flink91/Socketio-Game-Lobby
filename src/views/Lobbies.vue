@@ -20,13 +20,16 @@
                 <h3>People joining:</h3>
               </div>
               <div class="card-body">
-                <div class="users" v-for="(msg, index) in last5Users" :key="index">
-                  <p v-bind:style="{ color: msg.color }" class="new-user">
-                    <span
-                      class="font-weight-bold"
-                      v-bind:style="{ color: msg.color }"
-                    >{{ msg.username }} connected</span>
-                    ({{ msg.color }})
+                <div class="users" v-for="(msg, index) in last10BroadcastMessages" :key="index">
+                  <p
+                    :style="[ msg.disconnected ? {color: 'grey',fontStyle:'italic'} : {color:msg.color }]"
+                    class="new-user"
+                  >
+                    <span class="font-weight-bold">
+                      {{ msg.name }}
+                      <span v-if="msg.disconnected">dis</span>connected
+                    </span>
+                    <span v-if="!msg.disconnected">({{ msg.color }})</span>
                   </p>
                 </div>
               </div>
@@ -58,8 +61,8 @@ export default {
       window.scrollTo(0, 0);
       return this.$store.getters.error;
     },
-    last5Users() {
-      return this.$store.getters.last5Users;
+    last10BroadcastMessages() {
+      return this.$store.getters.last10BroadcastMessages;
     }
   },
   sockets: {

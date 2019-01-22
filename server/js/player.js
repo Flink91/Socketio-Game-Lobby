@@ -1,5 +1,5 @@
 //a player class in the server
-var Player = function(id, name, color, room, isHost) {
+var Player = function (id, name, color, room, isHost) {
   this.id = id;
   this.name = name;
   this.color = color;

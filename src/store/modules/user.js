@@ -3,6 +3,7 @@ const state = {
   name: null,
   color: null,
   users: [],
+  broadcastMessages: [],
   rooms: null,
   messages: [],
   room: null,
@@ -34,6 +35,13 @@ const getters = {
     } else {
       return state.users.slice(-5);
     }
+  },
+  last10BroadcastMessages(state) {
+    if (state.broadcastMessages.length <= 10) {
+      return state.broadcastMessages;
+    } else {
+      return state.broadcastMessages.slice(-10);
+    }
   }
 };
 
@@ -43,8 +51,16 @@ const mutations = {
     // console.log("%c socket_connect", "color:green");
     state.connected = true;
   },
-  SOCKET_DISCONNECT(state) {
-    state.connected = false;
+  SOCKET_USER_DISCONNECTED(state, user) {
+    // eslint-disable-next-line
+    console.log("%c socket_on_user_disconnected", "color:green");
+    // delete user from local users
+    var disconnectedUser = state.users.find(x => x.id === user.id);
+    var posInArray = state.users.indexOf(disconnectedUser);
+    delete state.users[posInArray];
+    //save disconnects to show on screen
+    user.disconnected = true;
+    state.broadcastMessages.push(user);
   },
   SOCKET_JOINED_SERVER(state, user) {
     // eslint-disable-next-line
@@ -56,6 +72,7 @@ const mutations = {
     // eslint-disable-next-line
     console.log("%c socket_on_new_user", "color:green");
     state.users.push(user);
+    state.broadcastMessages.push(user);
 
   },
   SOCKET_HOST(state, message) {
