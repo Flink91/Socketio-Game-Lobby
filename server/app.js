@@ -19,7 +19,6 @@ var getIOInstance = function () {
   return io;
 };
 
-
 // Some complicated moduling to keep this file smaller. SocketIO is passed via Instance
 require('./js/roomModule.js')(getIOInstance, clients, rooms);
 require('./js/gameModule.js')(getIOInstance);
