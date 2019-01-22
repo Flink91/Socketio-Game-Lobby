@@ -19,7 +19,7 @@
             <v-layout wrap>
               <v-form ref="form" v-model="valid" lazy-validation class="join-form">
                 <v-text-field v-model="name" :rules="nameRules" :counter="10" label="Name" required></v-text-field>
-                <v-text-field v-model="color" :rules="colorRules" label="Color" required></v-text-field>
+                <app-avatar-picker @color="getColor"></app-avatar-picker>
                 <v-checkbox
                   v-model="checkbox"
                   :rules="[v => !!v || 'You must agree to continue!']"
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import AvatarPicker from "@/components/shared/AvatarPicker.vue";
 export default {
   data() {
     return {
@@ -49,7 +50,6 @@ export default {
         v => (v && v.length <= 10) || "Name must be less than 10 characters"
       ],
       color: "",
-      colorRules: [v => !!v || "Color is required"],
       checkbox: false
     };
   },
@@ -66,6 +66,9 @@ export default {
     this.dialog = this.$store.getters.name == null ? true : false;
   },
   methods: {
+    getColor(color) {
+      this.color = color;
+    },
     submit() {
       if (this.$refs.form.validate()) {
         this.$socket.emit("NEW_USER", {
@@ -79,6 +82,9 @@ export default {
     clear() {
       this.$refs.form.reset();
     }
+  },
+  components: {
+    "app-avatar-picker": AvatarPicker
   }
 };
 </script>
