@@ -4,7 +4,12 @@ const path = require("path");
 
 const app = express();
 
-app.use("/", serveStatic(path.join(__dirname, "/dist")));
+app.use("/", serveStatic(path.join(__dirname, "/dist/")));
+// reroute any filesearch to index (for heroku)
+app.get(/.*/, function (req, res) {
+  res.sendfile(__dirname + "/dist/index.html");
+});
+
 
 const PORT = process.env.PORT || 8080;
 
