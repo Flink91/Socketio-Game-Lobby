@@ -3,12 +3,13 @@ var uuid = require("node-uuid");
 var Room = require("./js/room.js");
 var Player = require("./js/player.js");
 
+const PORT = process.env.PORT || 3000;
 const express = require("express");
 
 const app = express();
 
-const server = app.listen(process.env.PORT, function () {
-  console.log("server running on port " + process.env.PORT);
+const server = app.listen(PORT, function () {
+  console.log("server running on port " + PORT);
 });
 
 var rooms = {};
