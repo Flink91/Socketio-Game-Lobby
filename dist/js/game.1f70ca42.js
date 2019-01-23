@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["game"],{"7d36":function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("v-container",[t("p",[e._v("Game Route")])])},o=[],u=t("2877"),i=t("6544"),l=t.n(i),r=t("a523"),c={},s=Object(u["a"])(c,a,o,!1,null,null,null);s.options.__file="Game.vue";n["default"]=s.exports;l()(s,{VContainer:r["a"]})}}]);
+//# sourceMappingURL=game.1f70ca42.js.map
