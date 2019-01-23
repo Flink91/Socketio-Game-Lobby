@@ -7,15 +7,24 @@ const PORT = process.env.PORT || 3000;
 const express = require("express");
 
 const app = express();
+const socketIO = require("socket.io");
 
-const server = app.listen(PORT, function () {
-  console.log("server running on port " + PORT);
+const server = express()
+  .use(app)
+  .listen(PORT, () => console.log(`Listening Socket on ${ PORT }`));
+
+// app.use(express.static(__dirname + "/dist/"));
+// reroute any filesearch to index (for heroku)
+app.get(/.*/, function (req, res) {
+  res.sendfile(__dirname + "/dist/index.html");
 });
+
+
 
 var rooms = {};
 var clients = {};
 
-const io = require("socket.io")(server);
+const io = socketIO(server);
 var getIOInstance = function () {
   return io;
 };
