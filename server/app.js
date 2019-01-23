@@ -7,8 +7,8 @@ const express = require("express");
 
 const app = express();
 
-const server = app.listen(3001, function () {
-  console.log("server running on port 3001");
+const server = app.listen(process.env.PORT, function () {
+  console.log("server running on port " + process.env.PORT);
 });
 
 var rooms = {};
