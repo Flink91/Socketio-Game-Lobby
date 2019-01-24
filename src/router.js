@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 // import Home from "./views/Home.vue";
-import Lobbies from "./views/Lobbies.vue";
+import Rooms from "./views/Rooms.vue";
 
 Vue.use(Router);
 
@@ -9,7 +9,7 @@ export default new Router({
   routes: [{
       path: "/",
       name: "home",
-      component: Lobbies
+      component: Rooms
     },
     {
       path: "/about",
@@ -22,10 +22,10 @@ export default new Router({
     },
     {
       params: ['roomID'],
-      path: "/lobby/:roomID",
-      name: "lobby",
+      path: "/room/:roomID",
+      name: "room",
       component: () =>
-        import( /* webpackChunkName: "lobby" */ "./views/Lobby.vue")
+        import( /* webpackChunkName: "room" */ "./views/Room.vue")
     },
     {
       path: "/game",

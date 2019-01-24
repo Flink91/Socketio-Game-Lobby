@@ -29,10 +29,34 @@ module.exports = function (io, clients, rooms) {
         .in(room.id)
         .emit("CHAT_MESSAGE", msg);
     });
+    //LEAVE ROOM
+    socket.on("LEAVE_ROOM", function () {
+      var room = clients[socket.id].room;
+      leaveRoom(socket, room);
+    });
+
+    //on disconnect remove from room too
+    socket.on('disconnect', function () {
+      console.log("Disconnected from roomModule: " + socket.id);
+      // TODO if in room
+      if (isInRoom(socket, socket.id)) {
+        var room = clients[socket.id].room;
+
+        leaveRoom(socket, room);
+        if (clients[socket.id].isHost) {
+          deleteRoom(room.id);
+        } else {
+
+        }
+      }
+      io().emit("UPDATE_ROOMS", rooms);
+      clients[socket.id] = null;
+
+    });
   });
 
   function hostARoom(socket, roomID, clientID, readableName, size, isPrivate) {
-    if (isAlreadyInRoom(socket, clientID)) return false;
+    if (isInRoom(socket, clientID)) return false;
 
     socket.join(roomID, function (err) {
       if (!err) {
@@ -56,7 +80,7 @@ module.exports = function (io, clients, rooms) {
   }
 
   function connectClientToRoom(socket, roomID, clientID) {
-    if (isAlreadyInRoom(socket, clientID)) return false;
+    if (isInRoom(socket, clientID)) return false;
 
     // if room exists and is full
     if (rooms[roomID]) {
@@ -92,15 +116,62 @@ module.exports = function (io, clients, rooms) {
     return true;
   }
 
-  function isAlreadyInRoom(socket, clientID) {
+  /**
+   * leave room in socket logic, remove client from room.clients[], check if * room is now empty and update Room List and Room Info
+   */
+  function leaveRoom(socket, roomID) {
+    socket.leave(roomID, function (err) {
+      if (!err) {
+        var room = rooms[roomID];
+
+        // deletes client from room.clients[Player{},Player{},Player{}] array
+        var roomClients = room.clients;
+        var index = roomClients.findIndex(function (o) {
+          return o.id === socket.id;
+        })
+        if (index !== -1) roomClients.splice(index, 1);
+
+        // if the player is still there, update player object
+        if (clients[socket.id]) {
+          clients[socket.id].isHost = null;
+          clients[socket.id].room = null;
+        }
+
+        // check if room now empty => delete
+        if (room.clients.length <= 0) {
+          deleteRoom(roomID);
+        }
+
+        // Emit changes
+        io().sockets.emit("UPDATE_ROOMS", rooms);
+        io().sockets.in(roomID).emit("GET_ROOM_INFO", room);
+
+      } else {
+        socket.emit("ERROR", {
+          message: err
+        });
+        console.log(err);
+      }
+    });
+  }
+
+  function deleteRoom(roomID) {
+    delete rooms[roomID];
+  }
+
+  function isInRoom(socket, clientID) {
     // if the client is already a host, or already connected to a room
-    if (clients[clientID].room != undefined) {
-      socket.emit("ERROR", {
-        message: "You are already connected to a room"
-      });
-      return true;
-    } else {
-      return false;
+    if (clients[clientID] != undefined) {
+      if ("room" in clients[clientID]) {
+        if (clients[clientID].room != undefined) {
+          socket.emit("ERROR", {
+            message: "You are already connected to a room"
+          });
+          return true;
+        }
+      } else {
+        return false;
+      }
     }
   }
 
@@ -111,6 +182,9 @@ module.exports = function (io, clients, rooms) {
     }
   }
 
+  /**
+   * Find a room by providing the id of a client
+   */
   function findRoomByID(clientID, rooms) {
     var key, room;
     for (key in rooms) {

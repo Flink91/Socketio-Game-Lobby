@@ -66,7 +66,7 @@ export default {
         function(roomID) {
           self.clear();
           self.dialog = false;
-          self.$router.push({ name: "lobby", params: { roomID: roomID } });
+          self.$router.push({ name: "room", params: { roomID: roomID } });
         }
       );
       // this.color = ''

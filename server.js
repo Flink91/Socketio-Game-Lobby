@@ -11,7 +11,6 @@ var Player = require("./server/player.js");
 
 const app = express();
 
-
 app.use("/", serveStatic(path.join(__dirname, "/dist/")));
 
 const PORT = process.env.PORT || 8080;
@@ -25,6 +24,8 @@ const server = express()
 //   res.sendfile(__dirname + "/dist/index.html");
 // });
 
+
+
 var rooms = {};
 var clients = {};
 
@@ -32,7 +33,6 @@ const io = socketIO(server);
 var getIOInstance = function () {
   return io;
 };
-
 
 // Some complicated moduling to keep this file smaller. SocketIO is passed via Instance
 require('./server/roomModule.js')(getIOInstance, clients, rooms);

@@ -1,19 +1,19 @@
 <template>
   <v-container>
-    <v-layout row justify-center>
-      <v-flex xs4 text-xs-center>
+    <v-layout align-center justify-center row fill-height>
+      <v-flex text-xs-center>
         <v-btn @click="prevColor" fab small>
-          <v-icon>arrow_left</v-icon>
+          <v-icon>keyboard_arrow_left</v-icon>
         </v-btn>
       </v-flex>
-      <v-flex xs4 text-xs-center>
+      <v-flex text-xs-center>
         <div class="square" :style="{'background-color':colors[color]}">
-          <span class="colorNumber">{{color}}</span>
+          <span class="colorNumber">{{color+1}}</span>
         </div>
       </v-flex>
-      <v-flex xs4 text-xs-center>
+      <v-flex text-xs-center>
         <v-btn @click="nextColor" fab small>
-          <v-icon>arrow_right</v-icon>
+          <v-icon>keyboard_arrow_right</v-icon>
         </v-btn>
       </v-flex>
     </v-layout>
@@ -28,13 +28,16 @@ export default {
         "#FF0000",
         "#C13F3F",
         "#EEB70C",
-        "#2FF900",
+        "#7F6900",
         "#2CFC60",
         "#110754",
         "#8A0499",
         "#300242",
         "#0000FF",
-        "#3F6022"
+        "#3F6022",
+        "#4f02ff",
+        "#9B0BB5",
+        "#0B0003"
       ],
       color: Math.floor(Math.random() * 10)
     };
@@ -69,13 +72,16 @@ export default {
 <style scoped>
 .square {
   display: inline-block;
-  height: 100%;
-  width: 100%;
+  height: 52px;
+  border-radius: 5px;
+  border: 2px solid grey;
+  box-shadow: 0 0 4px 0px grey;
+  width: 52px;
   max-width: 100px;
 }
 
 .square .colorNumber {
-  margin-top: 20px;
-  color: white;
+  color: #efefef;
+  font-size: 32px;
 }
 </style>

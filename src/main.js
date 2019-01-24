@@ -31,6 +31,7 @@ new Vue({
   router,
   render: h => h(App),
   created() {
+    this.$router.push("/");
     this.$store.commit('setLoading', false);
   }
 }).$mount("#app");

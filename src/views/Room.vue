@@ -2,10 +2,18 @@
   <v-container>
     <v-layout row wrap>
       <v-flex xs12 sm8 md10>
-        <h3 class="title my-3 mx-0">Room: {{room.readableName}}</h3>
+        <v-layout justify-space-between class="mb-3">
+          <v-flex>
+            <h3 class="title my-3 mx-0">Room: {{room.readableName}}</h3>
+          </v-flex>
+          <v-flex text-xs-right>
+            <v-btn color="error" @click="leave" fab small>
+              <v-icon>exit_to_app</v-icon>
+            </v-btn>
+          </v-flex>
+        </v-layout>
+        <v-spacer></v-spacer>
         <div>
-          <v-spacer></v-spacer>
-
           <ul class="messages" v-chat-scroll="{always: false, smooth: true}">
             <li class="message" v-for="(m, index) in messages" :key="index">
               <span class="font-weight-bold" v-bind:style="{ color: m.color }">{{ m.name }}</span>
@@ -31,7 +39,7 @@
         <div class="new-users-card py-3 px-3">
           <div class="new-users-card-body">
             <div class="new-users-card-title">
-              <h3>People in Lobby:</h3>
+              <h3>People in Room:</h3>
             </div>
             <div class="card-body">
               <div class="users" v-for="(client, index) in room.clients" :key="index">
@@ -53,9 +61,7 @@
               <h3>Game Info:</h3>
             </div>
             <div class="card-body">
-              <div class="users" v-for="(msg, index) in last5Users" :key="index">
-                <p class="new-user">//Todo</p>
-              </div>
+              <p class="new-user">//Todo</p>
             </div>
           </div>
           <div class="card-footer"></div>
@@ -66,16 +72,13 @@
 </template>
 
 <script>
-import io from "socket.io-client";
-
 export default {
   data() {
     return {
       chatMessage: "",
       valid: true,
       color: "",
-      users: [],
-      socket: io("localhost:3001")
+      users: []
     };
   },
   computed: {
@@ -102,6 +105,10 @@ export default {
         message: this.chatMessage
       });
       this.chatMessage = "";
+    },
+    leave() {
+      this.$socket.emit("LEAVE_ROOM");
+      this.$router.push("/");
     }
   },
   mounted() {}
@@ -111,7 +118,6 @@ export default {
 <style scoped>
 .new-users-card {
   min-width: 200px;
-  min-height: 180px;
   opacity: 0.8;
   transition: 0.5s all;
 }
