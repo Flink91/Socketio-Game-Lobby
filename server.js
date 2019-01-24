@@ -15,9 +15,7 @@ const app = express();
 app.use("/", serveStatic(path.join(__dirname, "/dist/")));
 
 const PORT = process.env.PORT || 8080;
-
 const socketIO = require("socket.io");
-
 const server = express()
   .use(app)
   .listen(PORT, () => console.log(`Listening Socket on ${ PORT }`));
@@ -26,6 +24,9 @@ const server = express()
 // app.get(/.*/, function (req, res) {
 //   res.sendfile(__dirname + "/dist/index.html");
 // });
+
+var rooms = {};
+var clients = {};
 
 const io = socketIO(server);
 var getIOInstance = function () {
