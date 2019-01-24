@@ -1,7 +1,9 @@
+// this is not called at the moment, go one folder up to see the new start point
+
 //Express Server with Nodemon - will refresh the server automatically on change
 var uuid = require("node-uuid");
-var Room = require("./js/room.js");
-var Player = require("./js/player.js");
+var Room = require("./room.js");
+var Player = require("./player.js");
 
 const PORT = process.env.PORT || 3000;
 const express = require("express");
@@ -30,8 +32,8 @@ var getIOInstance = function () {
 };
 
 // Some complicated moduling to keep this file smaller. SocketIO is passed via Instance
-require('./js/roomModule.js')(getIOInstance, clients, rooms);
-require('./js/gameModule.js')(getIOInstance);
+require('./roomModule.js')(getIOInstance, clients, rooms);
+require('./gameModule.js')(getIOInstance);
 
 io.on("connection", function (socket) {
   console.log("New connection: " + socket.id);

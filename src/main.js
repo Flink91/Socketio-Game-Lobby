@@ -15,7 +15,7 @@ Vue.config.productionTip = false;
 Vue.use(
   new VueSocketIO({
     debug: true,
-    connection: "https://socketio-game-lobby.herokuapp.com/", // or use `//${window.location.host}`, if the connection URL will use the same host as window
+    connection: `${window.location.host}`, // or use `${window.location.host}`, if the connection URL will use the same host as window
     vuex: {
       store,
       actionPrefix: "SOCKET_",
