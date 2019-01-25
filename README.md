@@ -1,5 +1,6 @@
 # socketio-vue-game-lobby
-This is work in progress, please come again later :)
+
+**This is work in progress and still has bugs, please come again later :)**
 
 A bit more than basic chat room web app built with Express.js, Vue, Vuex, Vuetify and Socket.io + vue-socket.io. 
 It is built to be pushed to Heroku, that's why /dist is not in .gitignore and npm run serve is not used atm.
