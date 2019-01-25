@@ -72,12 +72,12 @@ export default {
 <style scoped>
 .square {
   display: inline-block;
-  height: 52px;
+  height: 50px;
+  width: 50px;
+  max-width: 100px;
   border-radius: 5px;
   border: 2px solid grey;
   box-shadow: 0 0 4px 0px grey;
-  width: 52px;
-  max-width: 100px;
 }
 
 .square .colorNumber {

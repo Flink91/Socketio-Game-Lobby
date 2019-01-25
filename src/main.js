@@ -33,5 +33,8 @@ new Vue({
   created() {
     this.$router.push("/");
     this.$store.commit('setLoading', false);
+  },
+  watch: {
+
   }
 }).$mount("#app");

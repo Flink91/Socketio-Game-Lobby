@@ -14,7 +14,7 @@ module.exports = function (io, clients, rooms) {
     });
     //JOIN A ROOM
     socket.on("JOIN", function (roomID, callback) {
-      if (clients[socket.id] == undefined) return false;
+      if (checkClientExists(socket)) return false;
       // join existing room
       if (connectClientToRoom(socket, roomID, socket.id)) {
         callback(roomID);
@@ -22,7 +22,7 @@ module.exports = function (io, clients, rooms) {
     });
     //SEND A CHAT MESSAGE
     socket.on("SEND_MESSAGE", function (msg) {
-      if (clients[socket.id] == undefined) return false;
+      if (checkClientExists(socket)) return false;
       // find out which room the client is in
       msg.color = clients[socket.id].color;
       var room = findRoomByID(socket.id, rooms);
@@ -33,7 +33,7 @@ module.exports = function (io, clients, rooms) {
     });
     //LEAVE ROOM
     socket.on("LEAVE_ROOM", function () {
-      if (clients[socket.id] == undefined) return false;
+      if (checkClientExists(socket)) return false;
       var room = clients[socket.id].room;
       leaveRoom(socket, room);
     });
@@ -163,6 +163,17 @@ module.exports = function (io, clients, rooms) {
 
   function deleteRoom(roomID) {
     delete rooms[roomID];
+  }
+
+  function checkClientExists(socket) {
+    if (clients[socket.id] == undefined) {
+      socket.emit("ERROR", {
+        message: "User unknown. Maybe you lost connection. Please join again."
+      });
+      return false;
+    } else {
+      return true;
+    }
   }
 
   function isInRoom(socket, clientID) {
