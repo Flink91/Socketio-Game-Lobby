@@ -45,7 +45,7 @@ export default {
   props: ["show"],
   data() {
     return {
-      dialog: this.show,
+      dialog: false,
 
       valid: true,
       roomName: "",
@@ -87,12 +87,7 @@ export default {
   watch: {
     // watch is needed, so the props change is detected, because I want to open the modal from a button in the parent component
     show: function() {
-      if (this.show == true) {
-        this.dialog = true;
-      } else {
-        this.show == false;
-        this.dialog = false;
-      }
+      this.dialog = true;
     }
   }
 };

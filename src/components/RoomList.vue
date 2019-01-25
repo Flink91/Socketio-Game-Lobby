@@ -11,14 +11,14 @@
             <v-icon>search</v-icon>
           </v-btn>-->
           <v-btn icon>
-            <v-icon @click="showCreateRoomModal = true">add</v-icon>
+            <v-icon @click="showCreateRoomModal">add</v-icon>
           </v-btn>
         </v-toolbar>
-        <app-create-room-modal :show="showCreateRoomModal"/>
+        <app-create-room-modal :show="showRoomModal"/>
 
         <div v-if="!rooms || rooms.length<=0" class="placeholder">
           <p>No rooms yet</p>
-          <v-btn @click="showCreateRoomModal = true">Create the first one!</v-btn>
+          <v-btn @click="showCreateRoomModal">Create the first one!</v-btn>
         </div>
 
         <div v-else>
@@ -52,7 +52,7 @@ import CreateRoomModal from "@/components/CreateRoomModal.vue";
 export default {
   data() {
     return {
-      showCreateRoomModal: false
+      showRoomModal: false
     };
   },
   computed: {
@@ -69,6 +69,13 @@ export default {
       this.$socket.emit("JOIN", roomID, function() {
         self.$router.push({ name: "room", params: { roomID: roomID } });
       });
+    },
+    showCreateRoomModal() {
+      // cheeky workaround :) Needs to be set to false and then true again to update, otherwise it might need two clicks after closing the modal by clicking outside of it. An emit from child would solve this but seems like overkill. Let me know if you know a better solution
+      this.showRoomModal = false;
+      setTimeout(() => {
+        this.showRoomModal = true;
+      }, 0);
     }
   },
   components: {
