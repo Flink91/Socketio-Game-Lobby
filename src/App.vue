@@ -2,8 +2,8 @@
   <v-app>
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
-        <span>SocketIO</span>
-        <span class="font-weight-light">Game Lobby</span>
+        <span>Chat Rooms&nbsp;</span>
+        <span class="font-weight-light">with SocketIO &amp; Vue</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>

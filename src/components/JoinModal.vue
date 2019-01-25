@@ -12,26 +12,52 @@
         </v-slide-y-transition>
 
         <v-card-title>
-          <span class="headline">Pick a Name and a color!</span>
+          <span class="headline">Pick a Name and a color</span>
         </v-card-title>
         <v-card-text>
-          <v-container grid-list xs-12>
+          <v-container grid-list xs-12 class="py-0 px-0">
             <v-layout wrap>
-              <v-form ref="form" v-model="valid" lazy-validation class="join-form">
-                <v-text-field v-model="name" :rules="nameRules" :counter="10" label="Name" required></v-text-field>
-                <app-avatar-picker @color="getColor"></app-avatar-picker>
-                <v-checkbox
-                  v-model="checkbox"
-                  :rules="[v => !!v || 'You must agree to continue!']"
-                  label="Do you agree to something?"
-                  required
-                ></v-checkbox>
+              <v-flex xs12>
+                <v-form ref="form" v-model="valid" lazy-validation class="join-form">
+                  <v-text-field
+                    v-model="name"
+                    :rules="nameRules"
+                    :counter="10"
+                    label="Name"
+                    single-line
+                    solo
+                    required
+                  ></v-text-field>
+                  <app-avatar-picker @color="getColor"></app-avatar-picker>
+                  <v-checkbox
+                    v-model="checkbox"
+                    :rules="[v => !!v || 'You must agree to continue!']"
+                    label="Do you agree to the terms and conditions?"
+                    required
+                  ></v-checkbox>
 
-                <v-btn :disabled="!valid" @click="submit">join</v-btn>
-              </v-form>
+                  <v-btn :disabled="!valid" @click="submit" block large>Join</v-btn>
+                </v-form>
+              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
+
+        <v-flex xs12>
+          <v-expansion-panel class="terms">
+            <v-expansion-panel-content>
+              <div slot="header">Terms and conditions</div>
+              <v-card>
+                <v-card-text>Put your terms and condititons here.
+                  <ul>
+                    <li>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.</li>
+                    <li>From time to time this website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s). We have no responsibility for the content of the linked website(s).</li>
+                  </ul>
+                </v-card-text>
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-flex>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -92,5 +118,8 @@ export default {
 <style scoped>
 .join-form {
   width: 100%;
+}
+.terms {
+  background-color: #ececec;
 }
 </style>

@@ -5,6 +5,7 @@ module.exports = function (io, clients, rooms) {
     console.log("Room module connected");
     //HOST A ROOM
     socket.on("HOST", function (readableName, size, isPrivate, callback) {
+      if (clients[socket.id] == undefined) return false;
       // create new room ID on host
       var newRoomID = uuid.v4();
       if (hostARoom(socket, newRoomID, socket.id, readableName, size, isPrivate)) {
@@ -13,7 +14,7 @@ module.exports = function (io, clients, rooms) {
     });
     //JOIN A ROOM
     socket.on("JOIN", function (roomID, callback) {
-      console.log("is it here?" + roomID);
+      if (clients[socket.id] == undefined) return false;
       // join existing room
       if (connectClientToRoom(socket, roomID, socket.id)) {
         callback(roomID);
@@ -21,6 +22,7 @@ module.exports = function (io, clients, rooms) {
     });
     //SEND A CHAT MESSAGE
     socket.on("SEND_MESSAGE", function (msg) {
+      if (clients[socket.id] == undefined) return false;
       // find out which room the client is in
       msg.color = clients[socket.id].color;
       var room = findRoomByID(socket.id, rooms);
@@ -31,6 +33,7 @@ module.exports = function (io, clients, rooms) {
     });
     //LEAVE ROOM
     socket.on("LEAVE_ROOM", function () {
+      if (clients[socket.id] == undefined) return false;
       var room = clients[socket.id].room;
       leaveRoom(socket, room);
     });
@@ -57,6 +60,7 @@ module.exports = function (io, clients, rooms) {
 
   function hostARoom(socket, roomID, clientID, readableName, size, isPrivate) {
     if (isInRoom(socket, clientID)) return false;
+    if (clients[socket.id] == undefined) return false;
 
     socket.join(roomID, function (err) {
       if (!err) {
@@ -81,6 +85,7 @@ module.exports = function (io, clients, rooms) {
 
   function connectClientToRoom(socket, roomID, clientID) {
     if (isInRoom(socket, clientID)) return false;
+    if (clients[socket.id] == undefined) return false;
 
     // if room exists and is full
     if (rooms[roomID]) {
@@ -93,6 +98,7 @@ module.exports = function (io, clients, rooms) {
     }
 
     socket.join(roomID, function (err) {
+
       if (!err) {
         clients[socket.id].isHost = false;
         clients[socket.id].room = roomID;

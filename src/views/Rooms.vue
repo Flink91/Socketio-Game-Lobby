@@ -29,7 +29,6 @@
                       {{ msg.name }}
                       <span v-if="msg.disconnected">dis</span>connected
                     </span>
-                    <span v-if="!msg.disconnected">({{ msg.color }})</span>
                   </p>
                 </div>
               </div>
@@ -66,16 +65,13 @@ export default {
     }
   },
   sockets: {
-    // This place is useful when not using Vuex
+    // This place is only useful when not using Vuex
     connect: function() {}
   },
-  methods: {},
   mounted() {
     this.$socket.on("NEW_USER", data => {
-      // eslint-disable-next-line
-      console.log("hi" + data);
       this.users = [...this.users, data];
-      // you can also do this.messages.push(data)
+      // could also do this.messages.push(data)
     });
   },
   components: {

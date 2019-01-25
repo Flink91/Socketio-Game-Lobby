@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout align-center justify-center row fill-height>
-      <v-flex text-xs-center>
+      <v-flex text-xs-right>
         <v-btn @click="prevColor" fab small>
           <v-icon>keyboard_arrow_left</v-icon>
         </v-btn>
@@ -11,7 +11,7 @@
           <span class="colorNumber">{{color+1}}</span>
         </div>
       </v-flex>
-      <v-flex text-xs-center>
+      <v-flex text-xs-left>
         <v-btn @click="nextColor" fab small>
           <v-icon>keyboard_arrow_right</v-icon>
         </v-btn>
@@ -39,7 +39,7 @@ export default {
         "#9B0BB5",
         "#0B0003"
       ],
-      color: Math.floor(Math.random() * 10)
+      color: Math.floor(Math.random() * 13)
     };
   },
   methods: {
@@ -82,6 +82,6 @@ export default {
 
 .square .colorNumber {
   color: #efefef;
-  font-size: 32px;
+  font-size: 30px;
 }
 </style>

@@ -19,9 +19,17 @@
                   required
                 ></v-text-field>
                 <v-subheader class="pl-0">Room size</v-subheader>
-                <v-slider v-model="slider" thumb-label="always" :max="8" :min="2"></v-slider>
-                <v-checkbox v-model="privateCheckbox" label="Make this Lobby private?" required></v-checkbox>
-
+                <v-slider
+                  always-dirty
+                  ticks
+                  tick-size="3"
+                  :tick-labels="ticksLabels"
+                  v-model="slider"
+                  thumb-label="always"
+                  :max="8"
+                  :min="2"
+                ></v-slider>
+                <!-- <v-checkbox v-model="privateCheckbox" label="Make this Room private?" required></v-checkbox> -->
                 <v-btn :disabled="!valid" @click="submit">Create and join</v-btn>
               </v-form>
             </v-layout>
@@ -46,6 +54,7 @@ export default {
         v => (v && v.length <= 30) || "Name must be less than 30 characters"
       ],
       slider: 2,
+      ticksLabels: ["2", "3", "4", "5", "6", "7", "8"],
       privateCheckbox: false
     };
   },
@@ -69,7 +78,7 @@ export default {
           self.$router.push({ name: "room", params: { roomID: roomID } });
         }
       );
-      // this.color = ''
+      // this.color = ""
     },
     clear() {
       this.$refs.form.reset();
@@ -80,6 +89,9 @@ export default {
     show: function() {
       if (this.show == true) {
         this.dialog = true;
+      } else {
+        this.show == false;
+        this.dialog = false;
       }
     }
   }

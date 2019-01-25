@@ -39,7 +39,7 @@
         <div class="new-users-card py-3 px-3">
           <div class="new-users-card-body">
             <div class="new-users-card-title">
-              <h3>People in Room:</h3>
+              <h3>People in Room: ({{room.clients.length}}/{{room.size}})</h3>
             </div>
             <div class="card-body">
               <div class="users" v-for="(client, index) in room.clients" :key="index">
@@ -61,7 +61,7 @@
               <h3>Game Info:</h3>
             </div>
             <div class="card-body">
-              <p class="new-user">//Todo</p>
+              <p class="new-user">// Hook up game here</p>
             </div>
           </div>
           <div class="card-footer"></div>

@@ -11,14 +11,14 @@
             <v-icon>search</v-icon>
           </v-btn>-->
           <v-btn icon>
-            <v-icon @click="showCreateRoomModal = !showCreateRoomModal">add</v-icon>
+            <v-icon @click="showCreateRoomModal = true">add</v-icon>
           </v-btn>
         </v-toolbar>
         <app-create-room-modal :show="showCreateRoomModal"/>
 
         <div v-if="!rooms || rooms.length<=0" class="placeholder">
           <p>No rooms yet</p>
-          <v-btn @click="showCreateRoomModal = !showCreateRoomModal">Create the first one!</v-btn>
+          <v-btn @click="showCreateRoomModal = true">Create the first one!</v-btn>
         </div>
 
         <div v-else>
