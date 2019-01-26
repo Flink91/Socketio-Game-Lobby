@@ -12,14 +12,13 @@
     </v-toolbar>
 
     <v-content>
-      <v-slide-y-transition>
-        <v-layout row v-if="info">
-          <v-flex xs12>
-            <app-alert :text="info.message" :type="info.type" :time="info.time"></app-alert>
-          </v-flex>
-        </v-layout>
-      </v-slide-y-transition>
       <router-view/>
+
+      <v-layout row v-if="info">
+        <v-flex xs12>
+          <app-toast :text="info.message" :type="info.type" :time="info.time"></app-toast>
+        </v-flex>
+      </v-layout>
     </v-content>
   </v-app>
 </template>

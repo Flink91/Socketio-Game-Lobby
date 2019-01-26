@@ -1,3 +1,5 @@
+import router from "../../router";
+
 const state = {
   name: null,
   color: null,
@@ -83,6 +85,7 @@ const mutations = {
     console.log("%c socket_join", "color:green");
     state.room = message.room;
   },
+
   //this shall replace host and join
   SOCKET_GET_ROOM_INFO(state, message) {
     state.room = message;
@@ -113,7 +116,23 @@ const mutations = {
 
 };
 
-const actions = {};
+const actions = {
+  SOCKET_KICKED({
+    state,
+    commit,
+    rootState
+  }, myparam) {
+    // eslint-disable-next-line
+    console.log("%c socket_kicked", "color:green");
+    state.room = null;
+    rootState.general.info = {
+      message: "You were kicked from the room",
+      type: "warning",
+      time: "4000"
+    };
+    router.push("/");
+  },
+};
 
 export default {
   state,

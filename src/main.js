@@ -5,7 +5,7 @@ import App from "./App.vue";
 import VueSocketIO from "vue-socket.io";
 import router from "./router";
 
-import Alert from "./components/shared/Alert.vue"
+import Toast from "./components/shared/Toast.vue"
 
 import VueChatScroll from 'vue-chat-scroll'
 Vue.use(VueChatScroll)
@@ -24,7 +24,7 @@ Vue.use(
   })
 );
 
-Vue.component('app-alert', Alert)
+Vue.component('app-toast', Toast)
 
 new Vue({
   store,

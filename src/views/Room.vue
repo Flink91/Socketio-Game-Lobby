@@ -119,12 +119,13 @@ export default {
       this.chatMessage = "";
     },
     leave() {
-      this.$socket.emit("LEAVE_ROOM");
-      this.$router.push("/");
+      this.$socket.emit("LEAVE_ROOM", () => {
+        this.$router.push("/");
+      });
     },
     kick(clientID) {
       this.$socket.emit("KICK", clientID, callback => {
-        alert("jo" + callback);
+        // hmm
       });
     }
   },

@@ -38,21 +38,24 @@ module.exports = function (io, clients, rooms) {
       if (clients[socket.id].isHost) {
         var toBeKicked = clients[clientID];
         var room = findRoomByID(toBeKicked.id, rooms);
-        console.log(room);
-        leaveRoom(toBeKicked, room.id);
-        io().sockets.in(room.id).emit("CHAT_MESSAGE", {
-          name: "SERVER",
-          message: toBeKicked.name + " was kicked",
-          color: "#CCC"
-        });
-
+        if (leaveRoom(toBeKicked, room.id)) {
+          io().to(toBeKicked.id).emit("KICKED");
+          io().sockets.in(room.id).emit("CHAT_MESSAGE", {
+            name: "SERVER",
+            message: toBeKicked.name + " was kicked",
+            color: "#CCC"
+          });
+          callback();
+        }
       }
     });
     //LEAVE ROOM
-    socket.on("LEAVE_ROOM", function () {
+    socket.on("LEAVE_ROOM", function (callback) {
       if (!isClient(socket)) return false;
       var roomID = clients[socket.id].room;
-      leaveRoom(socket, roomID);
+      if (leaveRoom(socket, roomID)) {
+        callback();
+      }
     });
 
     //on disconnect remove from room too
@@ -146,7 +149,7 @@ module.exports = function (io, clients, rooms) {
   function leaveRoom(client, roomID) {
     var myClient = io().sockets.connected[client.id];
     myClient.leave(roomID, function (err) {
-      if (!err) {
+      if (!err && myClient) {
         var room = rooms[roomID];
 
         // deletes client from room.clients[Player{},Player{},Player{}] array
@@ -176,8 +179,10 @@ module.exports = function (io, clients, rooms) {
           message: err
         });
         console.log(err);
+        return false;
       }
     });
+    return true;
   }
 
   function deleteRoom(roomID) {
