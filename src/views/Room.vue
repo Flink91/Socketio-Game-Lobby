@@ -16,8 +16,12 @@
         <div>
           <ul class="messages" v-chat-scroll="{always: false, smooth: true}">
             <li class="message" v-for="(m, index) in messages" :key="index">
-              <span class="font-weight-bold" v-bind:style="{ color: m.color }">{{ m.name }}</span>
-              : {{m.message}}
+              <span
+                v-if="m.type!='server'"
+                class="font-weight-bold"
+                v-bind:style="{ color: m.color }"
+              >{{ m.name }}:</span>
+              {{m.message}}
             </li>
           </ul>
         </div>
@@ -120,6 +124,7 @@ export default {
     },
     leave() {
       this.$socket.emit("LEAVE_ROOM", () => {
+        this.$store.messages = [];
         this.$router.push("/");
       });
     },

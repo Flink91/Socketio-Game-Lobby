@@ -125,6 +125,7 @@ const actions = {
     // eslint-disable-next-line
     console.log("%c socket_kicked", "color:green");
     state.room = null;
+    state.messages = [];
     rootState.general.info = {
       message: "You were kicked from the room",
       type: "warning",

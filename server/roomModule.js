@@ -17,6 +17,12 @@ module.exports = function (io, clients, rooms) {
       if (!isClient(socket)) return false;
       // join existing room
       if (connectClientToRoom(socket, roomID, socket.id)) {
+        io().sockets.in(roomID).emit("CHAT_MESSAGE", {
+          name: "SERVER",
+          message: clients[socket.id].name + " joined",
+          type: "server",
+          color: "#CCC"
+        });
         callback(roomID);
       }
     });
@@ -35,14 +41,21 @@ module.exports = function (io, clients, rooms) {
 
     //HOST KICKS PLAYER
     socket.on("KICK", function (clientID, callback) {
+      var toBeKicked = io().sockets.connected[clientID];
+
+      if (toBeKicked == undefined) return false;
+      if (!isClient(toBeKicked)) return false;
+      if (!isInRoom(socket, toBeKicked.id)) return false;
+
       if (clients[socket.id].isHost) {
-        var toBeKicked = clients[clientID];
         var room = findRoomByID(toBeKicked.id, rooms);
+
         if (leaveRoom(toBeKicked, room.id)) {
           io().to(toBeKicked.id).emit("KICKED");
           io().sockets.in(room.id).emit("CHAT_MESSAGE", {
             name: "SERVER",
-            message: toBeKicked.name + " was kicked",
+            message: clients[toBeKicked.id].name + " was kicked",
+            type: "server",
             color: "#CCC"
           });
           callback();
@@ -54,6 +67,12 @@ module.exports = function (io, clients, rooms) {
       if (!isClient(socket)) return false;
       var roomID = clients[socket.id].room;
       if (leaveRoom(socket, roomID)) {
+        io().sockets.in(roomID).emit("CHAT_MESSAGE", {
+          name: "SERVER",
+          type: "server",
+          message: clients[socket.id].name + " left",
+          color: "#CCC"
+        });
         callback();
       }
     });
@@ -61,16 +80,15 @@ module.exports = function (io, clients, rooms) {
     //on disconnect remove from room too
     socket.on('disconnect', function () {
       console.log("Disconnected from roomModule: " + socket.id);
-      // TODO if in room
       if (isInRoom(socket, socket.id)) {
         var roomID = clients[socket.id].room;
-
+        io().sockets.in(roomID).emit("CHAT_MESSAGE", {
+          name: "SERVER",
+          type: "server",
+          message: clients[socket.id].name + " left",
+          color: "#CCC"
+        });
         leaveRoom(socket, roomID);
-        if (clients[socket.id].isHost) {
-          deleteRoom(room.id);
-        } else {
-
-        }
       }
       io().emit("UPDATE_ROOMS", rooms);
       clients[socket.id] = null;
@@ -79,7 +97,13 @@ module.exports = function (io, clients, rooms) {
   });
 
   function hostARoom(socket, roomID, clientID, readableName, size, isPrivate) {
-    if (isInRoom(socket, clientID)) return false;
+    if (isInRoom(socket, clientID)) {
+      socket.emit("ERROR", {
+        message: "You are already connected to a room",
+        type: "error"
+      });
+      return false;
+    }
     if (clients[socket.id] == undefined) return false;
 
     socket.join(roomID, function (err) {
@@ -89,7 +113,7 @@ module.exports = function (io, clients, rooms) {
 
         rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, isPrivate);
         console.log(clients[clientID].name + " has created room: " +
-          rooms[roomID].readableName + " with size: " + size + " and private?: " + isPrivate);
+          rooms[roomID].readableName + " with size: " + size + ". Private? : " + isPrivate);
 
         socket.emit("HOST");
         io().sockets.emit("UPDATE_ROOMS", rooms);
@@ -105,14 +129,21 @@ module.exports = function (io, clients, rooms) {
   }
 
   function connectClientToRoom(socket, roomID, clientID) {
-    if (isInRoom(socket, clientID)) return false;
+    if (isInRoom(socket, clientID)) {
+      socket.emit("ERROR", {
+        message: "You are already connected to a room",
+        type: "error"
+      });
+      return false;
+    }
     if (clients[socket.id] == undefined) return false;
 
     // if room exists and is full
     if (rooms[roomID]) {
       if (rooms[roomID].size <= rooms[roomID].clients.length) {
         socket.emit("ERROR", {
-          message: "This room is full"
+          message: "This room is full",
+          type: "error"
         });
         return false;
       }
@@ -147,15 +178,15 @@ module.exports = function (io, clients, rooms) {
    * leave room in socket logic, remove client from room.clients[], check if * room is now empty and update Room List and Room Info
    */
   function leaveRoom(client, roomID) {
-    var myClient = io().sockets.connected[client.id];
-    myClient.leave(roomID, function (err) {
-      if (!err && myClient) {
+
+    client.leave(roomID, function (err) {
+      if (!err && client) {
         var room = rooms[roomID];
 
         // deletes client from room.clients[Player{},Player{},Player{}] array
         var roomClients = room.clients;
         var index = roomClients.findIndex(function (o) {
-          return o.id === myClient.id;
+          return o.id === client.id;
         })
         if (index !== -1) roomClients.splice(index, 1);
 
@@ -176,7 +207,8 @@ module.exports = function (io, clients, rooms) {
 
       } else {
         socket.emit("ERROR", {
-          message: err
+          message: err,
+          type: "error"
         });
         console.log(err);
         return false;
@@ -192,7 +224,8 @@ module.exports = function (io, clients, rooms) {
   function isClient(socket) {
     if (clients[socket.id] == undefined) {
       socket.emit("ERROR", {
-        message: "User unknown. Maybe you lost connection. Please join again."
+        message: "User unknown. Maybe you lost connection. Please join again.",
+        type: "error"
       });
       return false;
     } else {
@@ -205,9 +238,6 @@ module.exports = function (io, clients, rooms) {
     if (clients[clientID] != undefined) {
       if ("room" in clients[clientID]) {
         if (clients[clientID].room != undefined) {
-          socket.emit("ERROR", {
-            message: "You are already connected to a room"
-          });
           return true;
         }
       } else {

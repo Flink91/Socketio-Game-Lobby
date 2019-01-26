@@ -73,9 +73,10 @@ const mutations = {
     console.log("%c socket_connecting", "color:orange");
   },
 
-  SOCKET_error() {
+  SOCKET_ERROR(state, msg) {
     // eslint-disable-next-line
     console.log("%c socket_error", "color:red");
+    state.info = msg;
   },
 };
 

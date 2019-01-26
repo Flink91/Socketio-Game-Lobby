@@ -57,9 +57,11 @@ io.on("connection", function (socket) {
 
   socket.on('disconnect', function () {
     console.log("Disconnected: " + socket.id);
-    // TODO if in room
     io.emit('USER_DISCONNECTED', clients[socket.id]);
-    clients[socket.id] = null;
+
+    // can't do that here, roommodule needs to check this first
+    // clients[socket.id] = null;
+
 
   });
 
