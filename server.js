@@ -34,10 +34,6 @@ var getIOInstance = function () {
   return io;
 };
 
-// Some complicated moduling to keep this file smaller. SocketIO is passed via Instance
-require('./server/roomModule.js')(getIOInstance, clients, rooms);
-require('./server/gameModule.js')(getIOInstance);
-
 io.on("connection", function (socket) {
   console.log("New connection: " + socket.id);
 
@@ -68,3 +64,8 @@ io.on("connection", function (socket) {
   });
 
 });
+
+// Some complicated moduling to keep this file smaller. SocketIO is passed via Instance
+// order important !
+require('./server/roomModule.js')(getIOInstance, clients, rooms);
+require('./server/gameModule.js')(getIOInstance);
