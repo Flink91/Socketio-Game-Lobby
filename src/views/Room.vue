@@ -47,7 +47,15 @@
                   <span
                     class="font-weight-bold"
                     v-bind:style="{ color: client.color }"
-                  >{{ client.name }}</span>
+                  >{{ client.name }}&nbsp;</span>
+                  <v-icon
+                    v-if="isHost && !client.isHost"
+                    fab
+                    small
+                    flat
+                    color="danger"
+                    @click="kick(client.id)"
+                  >block</v-icon>
                 </p>
               </div>
             </div>
@@ -61,6 +69,7 @@
               <h3>Game Info:</h3>
             </div>
             <div class="card-body">
+              <p v-if="isHost">You are the host</p>
               <p class="new-user">// Hook up game here</p>
             </div>
           </div>
@@ -88,6 +97,9 @@ export default {
     username() {
       return this.$store.getters.name;
     },
+    isHost() {
+      return this.$store.getters.isHost;
+    },
     room() {
       return this.$store.getters.room;
     },
@@ -109,6 +121,11 @@ export default {
     leave() {
       this.$socket.emit("LEAVE_ROOM");
       this.$router.push("/");
+    },
+    kick(clientID) {
+      this.$socket.emit("KICK", clientID, callback => {
+        alert("jo" + callback);
+      });
     }
   },
   mounted() {}

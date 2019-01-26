@@ -1,12 +1,5 @@
 <template>
   <div>
-    <v-slide-y-transition>
-      <v-layout row v-if="error">
-        <v-flex xs12>
-          <app-alert :text="error.message" :type="'error'"></app-alert>
-        </v-flex>
-      </v-layout>
-    </v-slide-y-transition>
     <v-container>
       <v-layout row wrap>
         <v-flex xs12 sm8 md10>
@@ -56,10 +49,6 @@ export default {
     };
   },
   computed: {
-    error() {
-      window.scrollTo(0, 0);
-      return this.$store.getters.error;
-    },
     last10BroadcastMessages() {
       return this.$store.getters.last10BroadcastMessages;
     }

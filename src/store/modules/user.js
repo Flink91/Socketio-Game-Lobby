@@ -1,5 +1,4 @@
 const state = {
-  connected: false,
   name: null,
   color: null,
   users: [],
@@ -16,6 +15,9 @@ const getters = {
   },
   name(state) {
     return state.name;
+  },
+  isHost(state) {
+    return state.isHost;
   },
   rooms(state) {
     return state.rooms;
@@ -46,11 +48,6 @@ const getters = {
 };
 
 const mutations = {
-  SOCKET_CONNECT(state) {
-    // eslint-disable-next-line
-    // console.log("%c socket_connect", "color:green");
-    state.connected = true;
-  },
   SOCKET_USER_DISCONNECTED(state, user) {
     // eslint-disable-next-line
     console.log("%c socket_on_user_disconnected", "color:green");
@@ -75,13 +72,10 @@ const mutations = {
     state.broadcastMessages.push(user);
 
   },
-  SOCKET_HOST(state, message) {
+  SOCKET_HOST(state) {
     // eslint-disable-next-line
     console.log("%c socket_host", "color:green");
     state.isHost = true;
-    state.room = message.room;
-    // eslint-disable-next-line
-    console.log(state.room);
 
   },
   SOCKET_JOIN(state, message) {

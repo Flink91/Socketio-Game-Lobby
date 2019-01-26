@@ -23,6 +23,7 @@ module.exports = function (io, clients, rooms) {
     //SEND A CHAT MESSAGE
     socket.on("SEND_MESSAGE", function (msg) {
       if (!isClient(socket)) return false;
+      if (!isInRoom(socket, socket.id)) return false;
       // find out which room the client is in
       msg.color = clients[socket.id].color;
       var room = findRoomByID(socket.id, rooms);
@@ -31,11 +32,27 @@ module.exports = function (io, clients, rooms) {
         .in(room.id)
         .emit("CHAT_MESSAGE", msg);
     });
+
+    //HOST KICKS PLAYER
+    socket.on("KICK", function (clientID, callback) {
+      if (clients[socket.id].isHost) {
+        var toBeKicked = clients[clientID];
+        var room = findRoomByID(toBeKicked.id, rooms);
+        console.log(room);
+        leaveRoom(toBeKicked, room.id);
+        io().sockets.in(room.id).emit("CHAT_MESSAGE", {
+          name: "SERVER",
+          message: toBeKicked.name + " was kicked",
+          color: "#CCC"
+        });
+
+      }
+    });
     //LEAVE ROOM
     socket.on("LEAVE_ROOM", function () {
       if (!isClient(socket)) return false;
-      var room = clients[socket.id].room;
-      leaveRoom(socket, room);
+      var roomID = clients[socket.id].room;
+      leaveRoom(socket, roomID);
     });
 
     //on disconnect remove from room too
@@ -43,9 +60,9 @@ module.exports = function (io, clients, rooms) {
       console.log("Disconnected from roomModule: " + socket.id);
       // TODO if in room
       if (isInRoom(socket, socket.id)) {
-        var room = clients[socket.id].room;
+        var roomID = clients[socket.id].room;
 
-        leaveRoom(socket, room);
+        leaveRoom(socket, roomID);
         if (clients[socket.id].isHost) {
           deleteRoom(room.id);
         } else {
@@ -71,6 +88,7 @@ module.exports = function (io, clients, rooms) {
         console.log(clients[clientID].name + " has created room: " +
           rooms[roomID].readableName + " with size: " + size + " and private?: " + isPrivate);
 
+        socket.emit("HOST");
         io().sockets.emit("UPDATE_ROOMS", rooms);
         getPeopleInRoom(clientID, roomID);
       } else {
@@ -125,22 +143,23 @@ module.exports = function (io, clients, rooms) {
   /**
    * leave room in socket logic, remove client from room.clients[], check if * room is now empty and update Room List and Room Info
    */
-  function leaveRoom(socket, roomID) {
-    socket.leave(roomID, function (err) {
+  function leaveRoom(client, roomID) {
+    var myClient = io().sockets.connected[client.id];
+    myClient.leave(roomID, function (err) {
       if (!err) {
         var room = rooms[roomID];
 
         // deletes client from room.clients[Player{},Player{},Player{}] array
         var roomClients = room.clients;
         var index = roomClients.findIndex(function (o) {
-          return o.id === socket.id;
+          return o.id === myClient.id;
         })
         if (index !== -1) roomClients.splice(index, 1);
 
         // if the player is still there, update player object
-        if (clients[socket.id]) {
-          clients[socket.id].isHost = null;
-          clients[socket.id].room = null;
+        if (clients[client.id]) {
+          clients[client.id].isHost = null;
+          clients[client.id].room = null;
         }
 
         // check if room now empty => delete
@@ -210,7 +229,6 @@ module.exports = function (io, clients, rooms) {
         //if (room.hostID === hostID) {
         //    return room;
         //}
-
         for (var i = 0; i < room.clients.length; i++) {
           if (room.clients[i].id === clientID) {
             return room;

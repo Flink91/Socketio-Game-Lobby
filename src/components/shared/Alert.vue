@@ -4,16 +4,18 @@
 
 <script>
 export default {
-  props: ["text", "type"],
+  props: ["text", "type", "time"],
   created() {
-    var self = this;
-    setTimeout(function() {
-      self.onClose();
-    }, 4000);
+    if (this.time) {
+      var self = this;
+      setTimeout(function() {
+        self.onClose();
+      }, this.time);
+    }
   },
   methods: {
     onClose() {
-      this.$store.dispatch("clearError");
+      this.$store.dispatch("clearInfo");
       this.$emit("dismissed");
     }
   }
