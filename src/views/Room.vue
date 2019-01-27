@@ -72,7 +72,6 @@ export default {
     },
     leave() {
       this.$socket.emit("LEAVE_ROOM", () => {
-        alert("delete the fucking messages");
         this.$store.commit("clearMessages");
         this.$router.push("/");
       });
