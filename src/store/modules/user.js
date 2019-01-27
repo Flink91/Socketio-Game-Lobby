@@ -112,6 +112,9 @@ const mutations = {
   },
   setUser(state, payload) {
     state.user = payload;
+  },
+  clearMessages(state) {
+    state.messages = [];
   }
 
 };

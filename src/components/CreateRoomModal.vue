@@ -3,9 +3,9 @@
     <v-dialog v-model="dialog" max-width="600px">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
-        <v-card-title>
-          <span class="headline">New Room</span>
-        </v-card-title>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-title>New Room</v-toolbar-title>
+        </v-toolbar>
         <v-card-text>
           <v-container grid-list xs-12>
             <v-layout wrap>
@@ -46,12 +46,13 @@ export default {
   data() {
     return {
       dialog: false,
-
       valid: true,
       roomName: "",
       nameRules: [
         v => !!v || "Name is required",
-        v => (v && v.length <= 30) || "Name must be less than 30 characters"
+        v => (v && v.length <= 30) || "Name must be less than 30 characters",
+        v =>
+          (v && v.replace(/\s/g, "").length > 0) || "Name cannot be only spaces"
       ],
       slider: 2,
       ticksLabels: ["2", "3", "4", "5", "6", "7", "8"],
@@ -78,7 +79,6 @@ export default {
           self.$router.push({ name: "room", params: { roomID: roomID } });
         }
       );
-      // this.color = ""
     },
     clear() {
       this.$refs.form.reset();

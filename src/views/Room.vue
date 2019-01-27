@@ -1,18 +1,16 @@
 <template>
-  <v-container>
+  <v-container grid-list-sm>
     <v-layout row wrap>
-      <v-flex xs12 sm8 md10>
-        <v-layout justify-space-between class="mb-3">
-          <v-flex>
-            <h3 class="title my-3 mx-0">Room: {{room.readableName}}</h3>
-          </v-flex>
-          <v-flex text-xs-right>
-            <v-btn color="error" @click="leave" fab small>
-              <v-icon>exit_to_app</v-icon>
-            </v-btn>
-          </v-flex>
-        </v-layout>
-        <v-spacer></v-spacer>
+      <v-flex xs12 sm8 lg9>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-title>Rooms</v-toolbar-title>
+
+          <v-spacer></v-spacer>
+          <v-btn color="error" @click="leave" fab small>
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </v-toolbar>
+
         <div>
           <ul class="messages" v-chat-scroll="{always: false, smooth: true}">
             <li class="message" v-for="(m, index) in messages" :key="index">
@@ -39,74 +37,24 @@
         </v-form>
       </v-flex>
 
-      <v-flex xs12 sm4 md2>
-        <div class="new-users-card py-3 px-3">
-          <div class="new-users-card-body">
-            <div class="new-users-card-title">
-              <h3>People in Room: ({{room.clients.length}}/{{room.size}})</h3>
-            </div>
-            <div class="card-body">
-              <div class="users" v-for="(client, index) in room.clients" :key="index">
-                <p v-bind:style="{ color: client.color }" class="new-user">
-                  <span
-                    class="font-weight-bold"
-                    v-bind:style="{ color: client.color }"
-                  >{{ client.name }}&nbsp;</span>
-                  <v-icon
-                    v-if="isHost && !client.isHost"
-                    fab
-                    small
-                    flat
-                    color="danger"
-                    @click="kick(client.id)"
-                  >block</v-icon>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="card-footer"></div>
-        </div>
-
-        <div class="new-users-card py-3 px-3">
-          <div class="new-users-card-body">
-            <div class="new-users-card-title">
-              <h3>Game Info:</h3>
-            </div>
-            <div class="card-body">
-              <p v-if="isHost">You are the host</p>
-              <p class="new-user">// Hook up game here</p>
-            </div>
-          </div>
-          <div class="card-footer"></div>
-        </div>
+      <v-flex xs12 sm4 lg3>
+        <app-people-in-room-list/>
+        <app-game-info-box/>
       </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import PeopleInRoomList from "@/components/PeopleInRoomList.vue";
+import GameInfoBox from "@/components/GameInfoBox.vue";
 export default {
   data() {
     return {
-      chatMessage: "",
-      valid: true,
-      color: "",
-      users: []
+      chatMessage: ""
     };
   },
   computed: {
-    last5Users() {
-      return this.$store.getters.last5Users;
-    },
-    username() {
-      return this.$store.getters.name;
-    },
-    isHost() {
-      return this.$store.getters.isHost;
-    },
-    room() {
-      return this.$store.getters.room;
-    },
     messages() {
       return this.$store.getters.messages;
     }
@@ -124,29 +72,20 @@ export default {
     },
     leave() {
       this.$socket.emit("LEAVE_ROOM", () => {
-        this.$store.messages = [];
+        alert("delete the fucking messages");
+        this.$store.commit("clearMessages");
         this.$router.push("/");
-      });
-    },
-    kick(clientID) {
-      this.$socket.emit("KICK", clientID, callback => {
-        // hmm
       });
     }
   },
-  mounted() {}
+  components: {
+    "app-people-in-room-list": PeopleInRoomList,
+    "app-game-info-box": GameInfoBox
+  }
 };
 </script>
 
 <style scoped>
-.new-users-card {
-  min-width: 200px;
-  opacity: 0.8;
-  transition: 0.5s all;
-}
-.new-user {
-  margin-bottom: 4px;
-}
 .messages {
   height: 250px;
   list-style: none;

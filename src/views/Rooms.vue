@@ -1,35 +1,15 @@
 <template>
   <div>
-    <v-container>
+    <app-join-modal/>
+
+    <v-container grid-list-sm>
       <v-layout row wrap>
-        <v-flex xs12 sm8 md10>
+        <v-flex xs12 sm8 lg9>
           <app-room-list/>
         </v-flex>
 
-        <v-flex xs12 sm4 md2>
-          <div class="new-users-card py-3 px-3">
-            <div class="new-users-card-body">
-              <div class="new-users-card-title">
-                <h3>People joining:</h3>
-              </div>
-              <div class="card-body">
-                <div class="users" v-for="(msg, index) in last10BroadcastMessages" :key="index">
-                  <p
-                    :style="[ msg.disconnected ? {color: 'grey',fontStyle:'italic'} : {color:msg.color }]"
-                    class="new-user"
-                  >
-                    <span class="font-weight-bold">
-                      {{ msg.name }}
-                      <span v-if="msg.disconnected">dis</span>connected
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="card-footer"></div>
-
-            <app-join-modal/>
-          </div>
+        <v-flex xs12 sm4 lg3>
+          <app-joining-list/>
         </v-flex>
       </v-layout>
     </v-container>
@@ -39,45 +19,20 @@
 <script>
 import JoinModal from "@/components/JoinModal.vue";
 import RoomList from "@/components/RoomList.vue";
+import JoiningList from "@/components/JoiningList.vue";
 
 export default {
   data() {
-    return {
-      username: "",
-      color: "",
-      users: []
-    };
-  },
-  computed: {
-    last10BroadcastMessages() {
-      return this.$store.getters.last10BroadcastMessages;
-    }
+    return {};
   },
   sockets: {
     // This place is only useful when not using Vuex
     connect: function() {}
   },
-  mounted() {
-    this.$socket.on("NEW_USER", data => {
-      this.users = [...this.users, data];
-      // could also do this.messages.push(data)
-    });
-  },
   components: {
     "app-join-modal": JoinModal,
-    "app-room-list": RoomList
+    "app-room-list": RoomList,
+    "app-joining-list": JoiningList
   }
 };
 </script>
-
-<style scoped>
-.new-users-card {
-  min-width: 200px;
-  min-height: 180px;
-  opacity: 0.8;
-  transition: 0.5s all;
-}
-.new-user {
-  margin-bottom: 4px;
-}
-</style>

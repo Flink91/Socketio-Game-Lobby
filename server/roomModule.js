@@ -79,7 +79,7 @@ module.exports = function (io, clients, rooms) {
 
     //on disconnect remove from room too
     socket.on('disconnect', function () {
-      console.log("Disconnected from roomModule: " + socket.id);
+
       if (isInRoom(socket, socket.id)) {
         var roomID = clients[socket.id].room;
         io().sockets.in(roomID).emit("CHAT_MESSAGE", {

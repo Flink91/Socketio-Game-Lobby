@@ -1,16 +1,24 @@
 import Vue from "vue";
+import Vuetify from 'vuetify';
 import "./plugins/vuetify";
+import colors from 'vuetify/es5/util/colors';
 import store from "./store/index";
 import App from "./App.vue";
 import VueSocketIO from "vue-socket.io";
 import router from "./router";
 
-import Toast from "./components/shared/Toast.vue"
+import Toast from "./components/shared/Toast.vue";
 
-import VueChatScroll from 'vue-chat-scroll'
-Vue.use(VueChatScroll)
+import VueChatScroll from 'vue-chat-scroll';
+Vue.use(VueChatScroll);
 
 Vue.config.productionTip = false;
+
+Vue.use(Vuetify, {
+  theme: {
+    primary: colors.indigo.darken4
+  }
+});
 
 Vue.use(
   new VueSocketIO({
@@ -24,7 +32,7 @@ Vue.use(
   })
 );
 
-Vue.component('app-toast', Toast)
+Vue.component('app-toast', Toast);
 
 new Vue({
   store,

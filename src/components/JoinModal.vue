@@ -3,19 +3,11 @@
     <v-dialog :value="dialog" persistent max-width="600px">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
-        <v-slide-y-transition>
-          <v-layout row v-if="error">
-            <v-flex xs12>
-              <app-alert :text="error.message" :type="'error'"></app-alert>
-            </v-flex>
-          </v-layout>
-        </v-slide-y-transition>
-
-        <v-card-title>
-          <span class="headline">Pick a Name and a color</span>
-        </v-card-title>
+        <v-toolbar color="primary" dark>
+          <v-toolbar-title>Pick a name and a color!</v-toolbar-title>
+        </v-toolbar>
         <v-card-text>
-          <v-container grid-list xs-12 class="py-0 px-0">
+          <v-container grid-list xs-12 class="py-0">
             <v-layout wrap>
               <v-flex xs12>
                 <v-form ref="form" v-model="valid" lazy-validation class="join-form">
@@ -71,9 +63,12 @@ export default {
       dialog: false,
       valid: true,
       name: "",
+      // this is not checked on the server, but it will suffice for this
       nameRules: [
         v => !!v || "Name is required",
-        v => (v && v.length <= 10) || "Name must be less than 10 characters"
+        v => (v && v.length <= 10) || "Name must be less than 10 characters",
+        v =>
+          (v && v.replace(/\s/g, "").length > 0) || "Name cannot be only spaces"
       ],
       color: "",
       checkbox: false
@@ -120,6 +115,6 @@ export default {
   width: 100%;
 }
 .terms {
-  background-color: #ececec;
+  background-color: #ececec !important;
 }
 </style>

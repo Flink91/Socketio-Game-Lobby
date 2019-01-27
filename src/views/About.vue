@@ -10,7 +10,7 @@
         <v-btn href="https://github.com/Flink91/Socketio-Game-Lobby" target="_blank">
           <span class="mr-2">Latest Release</span>
         </v-btn>
-
+        <br>
         <v-btn v-if="room" @click="$router.go(-1)" color="info">Back to your room</v-btn>
         <v-btn v-else @click="$router.go(-1)" color="info">Back</v-btn>
       </div>
