@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-toolbar app>
+    <v-toolbar app v-if="!(['room', 'game'].indexOf($route.name) > -1)">
       <v-toolbar-title class="headline text-uppercase">
         <span>Chat Rooms&nbsp;</span>
         <span class="font-weight-light">with SocketIO &amp; Vue</span>

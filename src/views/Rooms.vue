@@ -2,7 +2,7 @@
   <div>
     <app-join-modal/>
 
-    <v-container grid-list-sm>
+    <v-container grid-list-sm v-if="name">
       <v-layout row wrap>
         <v-flex xs12 sm8 lg9>
           <app-room-list/>
@@ -24,6 +24,11 @@ import JoiningList from "@/components/JoiningList.vue";
 export default {
   data() {
     return {};
+  },
+  computed: {
+    name() {
+      return this.$store.getters.name;
+    }
   },
   sockets: {
     // This place is only useful when not using Vuex
