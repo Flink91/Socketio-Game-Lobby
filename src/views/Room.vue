@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm8 lg9>
         <v-toolbar color="primary" dark>
-          <v-toolbar-title>Rooms</v-toolbar-title>
+          <v-toolbar-title>{{room.name}}</v-toolbar-title>
 
           <v-spacer></v-spacer>
           <v-btn color="error" @click="leave" fab small>

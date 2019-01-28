@@ -1,4 +1,7 @@
 import router from "../../router";
+import {
+  posix
+} from "path";
 
 const state = {
   name: null,
@@ -53,10 +56,15 @@ const mutations = {
   SOCKET_USER_DISCONNECTED(state, user) {
     // eslint-disable-next-line
     console.log("%c socket_on_user_disconnected", "color:green");
+    // eslint-disable-next-line
+    console.log(user);
+    // eslint-disable-next-line
+    console.log(state.users);
     // delete user from local users
     var disconnectedUser = state.users.find(x => x.id === user.id);
     var posInArray = state.users.indexOf(disconnectedUser);
-    delete state.users[posInArray];
+    // delete state.users[posInArray];
+    state.users.splice(posInArray, 1);
     //save disconnects to show on screen
     user.disconnected = true;
     state.broadcastMessages.push(user);
