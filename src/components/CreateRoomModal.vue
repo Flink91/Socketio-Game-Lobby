@@ -29,8 +29,16 @@
                   :max="8"
                   :min="2"
                 ></v-slider>
+                <v-select
+                  :items="games"
+                  label="Game"
+                  solo
+                  v-model="gameSelect"
+                  :rules="gameSelectRules"
+                ></v-select>
                 <!-- <v-checkbox v-model="privateCheckbox" label="Make this Room private?" required></v-checkbox> -->
                 <v-btn :disabled="!valid" @click="submit">Create and join</v-btn>
+                {{gameSelect}}
               </v-form>
             </v-layout>
           </v-container>
@@ -47,6 +55,9 @@ export default {
     return {
       dialog: false,
       valid: true,
+      games: ["Just Chat", "Connect What", "Default"],
+      gameSelect: null,
+      gameSelectRules: [v => !!v || "A Game must be selected"],
       roomName: "",
       nameRules: [
         v => !!v || "Name is required",
@@ -55,8 +66,8 @@ export default {
           (v && v.replace(/\s/g, "").length > 0) || "Name cannot be only spaces"
       ],
       slider: 2,
-      ticksLabels: ["2", "3", "4", "5", "6", "7", "8"],
-      privateCheckbox: false
+      ticksLabels: ["2", "3", "4", "5", "6", "7", "8"]
+      // privateCheckbox: false
     };
   },
   methods: {
@@ -72,7 +83,7 @@ export default {
         "HOST",
         this.roomName,
         this.slider,
-        this.privateCheckbox,
+        this.gameSelect,
         function(roomID) {
           self.clear();
           self.dialog = false;

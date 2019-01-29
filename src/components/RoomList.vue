@@ -30,12 +30,12 @@
 
               <v-list-tile :key="room.readableName" avatar>
                 <v-list-tile-avatar>
-                  <img src="@/assets/1.jpg">
+                  <img :src="images[room.game.replace(/\s/g, '')]">
                 </v-list-tile-avatar>
 
                 <v-list-tile-content>
                   <v-list-tile-title>{{room.readableName}} (Host: {{room.clients[0].name}})</v-list-tile-title>
-                  <v-list-tile-sub-title>{{room.clients.length}}/{{room.size}}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>{{room.game}} {{room.clients.length}}/{{room.size}}</v-list-tile-sub-title>
                 </v-list-tile-content>
                 <v-btn @click="joinRoom(room.id)">Join</v-btn>
               </v-list-tile>
@@ -52,7 +52,12 @@ import CreateRoomModal from "@/components/CreateRoomModal.vue";
 export default {
   data() {
     return {
-      showRoomModal: false
+      showRoomModal: false,
+      images: {
+        JustChat: require("@/assets/games/JustChat.jpg"),
+        Default: require("@/assets/games/Default.jpg"),
+        ConnectWhat: require("@/assets/games/ConnectWhat.jpg")
+      }
     };
   },
   computed: {

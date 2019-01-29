@@ -1,10 +1,10 @@
-function Room(id, client, readableName, size, isPrivate) {
+function Room(id, client, readableName, size, game) {
   this.id = id;
   this.readableName = readableName;
   this.hostID = client.id;
   this.clients = [];
   this.size = size;
-  this.isPrivate = isPrivate;
+  this.game = game;
   this.addClient(client);
 }
 

@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm8 lg9>
         <v-toolbar color="primary" dark>
-          <v-toolbar-title>{{room.name}}</v-toolbar-title>
+          <v-toolbar-title>{{room.readableName}}</v-toolbar-title>
 
           <v-spacer></v-spacer>
           <v-btn color="error" @click="leave" fab small>
@@ -25,6 +25,7 @@
         </div>
         <v-form class="chatMessage-form">
           <v-text-field
+            id="chatInput"
             v-model="chatMessage"
             append-icon="send"
             box
@@ -38,8 +39,8 @@
       </v-flex>
 
       <v-flex xs12 sm4 lg3>
-        <app-people-in-room-list/>
         <app-game-info-box/>
+        <app-people-in-room-list/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -57,6 +58,9 @@ export default {
   computed: {
     messages() {
       return this.$store.getters.messages;
+    },
+    room() {
+      return this.$store.getters.room;
     }
   },
   methods: {
@@ -99,5 +103,8 @@ export default {
 }
 .chatMessage-form {
   width: 100%;
+}
+.chatMessage-form .v-messages {
+  display: none;
 }
 </style>

@@ -4,11 +4,11 @@ module.exports = function (io, clients, rooms) {
   io().on('connection', socket => {
 
     //HOST A ROOM
-    socket.on("HOST", function (readableName, size, isPrivate, callback) {
+    socket.on("HOST", function (readableName, size, game, callback) {
       if (clients[socket.id] == undefined) return false;
       // create new room ID on host
       var newRoomID = uuid.v4();
-      if (hostARoom(socket, newRoomID, socket.id, readableName, size, isPrivate)) {
+      if (hostARoom(socket, newRoomID, socket.id, readableName, size, game)) {
         callback(newRoomID);
       }
     });
@@ -96,7 +96,7 @@ module.exports = function (io, clients, rooms) {
     });
   });
 
-  function hostARoom(socket, roomID, clientID, readableName, size, isPrivate) {
+  function hostARoom(socket, roomID, clientID, readableName, size, game) {
     if (isInRoom(socket, clientID)) {
       socket.emit("ERROR", {
         message: "You are already connected to a room",
@@ -111,9 +111,9 @@ module.exports = function (io, clients, rooms) {
         clients[socket.id].isHost = true;
         clients[socket.id].room = roomID;
 
-        rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, isPrivate);
+        rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, game);
         console.log(clients[clientID].name + " has created room: " +
-          rooms[roomID].readableName + " with size: " + size + ". Private? : " + isPrivate);
+          rooms[roomID].readableName + " with size: " + size);
 
         socket.emit("HOST");
         io().sockets.emit("UPDATE_ROOMS", rooms);

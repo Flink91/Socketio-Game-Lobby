@@ -1,7 +1,4 @@
 import router from "../../router";
-import {
-  posix
-} from "path";
 
 const state = {
   name: null,
