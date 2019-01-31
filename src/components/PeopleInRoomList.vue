@@ -25,6 +25,7 @@
                 color="orange darken-1"
                 class="in-room-icon"
               >gamepad</v-icon>
+              <v-icon v-if="client.ready" small color="success" class="ready-icon">done</v-icon>
             </p>
           </div>
         </v-card-text>
@@ -83,8 +84,13 @@ export default {
   margin-bottom: 4px;
 }
 
-.in-room-icon {
+.in-room-icon,
+.ready-icon {
   margin-bottom: 2px;
+}
+
+.ready-icon {
+  float: right;
 }
 </style>
 

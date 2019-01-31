@@ -7,7 +7,7 @@ const path = require("path");
 //needed for backend socket server
 var uuid = require("node-uuid");
 var Room = require("./server/room.js");
-var Player = require("./server/player.js");
+var Client = require("./server/client.js");
 
 const app = express();
 
@@ -42,7 +42,7 @@ io.on("connection", function (socket) {
     console.log(
       socket.id + "is now known as: " + data.username + " (" + data.color + ")"
     );
-    clients[socket.id] = new Player(
+    clients[socket.id] = new Client(
       socket.id,
       data.username,
       data.color,

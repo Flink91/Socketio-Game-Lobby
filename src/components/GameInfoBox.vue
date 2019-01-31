@@ -13,17 +13,17 @@
         </v-card-text>
         <v-card-actions>
           <div style="width:100%;" v-if="isHost">
-            <v-btn @click="startGame()" block color="success">Start Game
+            <v-btn @click="startGame()" block color="success" :disabled="!isAllReady">Start Game
               <v-spacer/>
               <v-icon>done</v-icon>
             </v-btn>
           </div>
           <div style="width:100%;" v-else>
-            <v-btn v-if="!ready" @click="isReady(true)" block color="info">Ready?
+            <v-btn v-if="!ready" @click="setReady(true)" block color="info">Ready?
               <v-spacer/>
               <v-icon>help_outline</v-icon>
             </v-btn>
-            <v-btn v-else @click="isReady(false)" flat block color="success">Ready!
+            <v-btn v-else @click="setReady(false)" flat block color="success">Ready!
               <v-spacer/>
               <v-icon>done</v-icon>
             </v-btn>
@@ -41,15 +41,24 @@ export default {
     return {
       users: [],
       ready: false,
-      options: null
+      options: null,
+      isClicked: false
     };
   },
   methods: {
-    isReady(isReady) {
-      this.ready = isReady;
+    setReady(isReady) {
+      if (this.isClicked) return;
+      this.isClicked = true;
+      this.$socket.emit("SET_READY", isReady, ready => {
+        this.ready = ready;
+      });
+      // prevent spam clicking
+      setTimeout(() => {
+        this.isClicked = false;
+      }, 3000);
     },
     startGame() {
-      this.$socket.emit("START_GAME", this.options);
+      this.$socket.emit("START_GAME", this.options, function() {});
     }
   },
   computed: {
@@ -58,6 +67,9 @@ export default {
     },
     isHost() {
       return this.$store.getters.isHost;
+    },
+    isAllReady() {
+      return this.$store.getters.isAllReady;
     }
   }
 };

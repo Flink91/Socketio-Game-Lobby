@@ -12,6 +12,7 @@ module.exports = function (io, clients, rooms) {
         callback(newRoomID);
       }
     });
+
     //JOIN A ROOM
     socket.on("JOIN", function (roomID, callback) {
       if (!isClient(socket)) return false;
@@ -26,6 +27,31 @@ module.exports = function (io, clients, rooms) {
         callback(roomID);
       }
     });
+
+    //TOGGLE READY MODE IN ROOM
+    socket.on("SET_READY", function (isReady, callback) {
+      if (!isClient(socket)) return false;
+      // join existing room
+      var room = findRoomByID(socket.id, rooms);
+      // this only updates the client in the room object but that is enough
+      var roomClients = room.clients;
+      var index = roomClients.findIndex(function (o) {
+        return o.id === socket.id;
+      })
+      roomClients[index].ready = isReady;
+      io().sockets.in(room.id).emit("GET_ROOM_INFO", room);
+      callback(roomClients[index].ready);
+    });
+
+    //TOGGLE READY MODE IN ROOM
+    socket.on("START_GAME", function (options, callback) {
+      if (!isClient(socket)) return false;
+      // join existing room
+      var room = findRoomByID(socket.id, rooms);
+      io().sockets.in(room.id).emit("START_GAME", options);
+      callback();
+    });
+
     //SEND A CHAT MESSAGE
     socket.on("SEND_MESSAGE", function (msg) {
       if (!isClient(socket)) return false;
@@ -33,13 +59,14 @@ module.exports = function (io, clients, rooms) {
       // find out which room the client is in
       msg.color = clients[socket.id].color;
       var room = findRoomByID(socket.id, rooms);
-
+      console.log("message");
+      console.log(msg);
       io().sockets
         .in(room.id)
         .emit("CHAT_MESSAGE", msg);
     });
 
-    //HOST KICKS PLAYER
+    //HOST KICKS Client
     socket.on("KICK", function (clientID, callback) {
       var toBeKicked = io().sockets.connected[clientID];
 
@@ -62,6 +89,7 @@ module.exports = function (io, clients, rooms) {
         }
       }
     });
+
     //LEAVE ROOM
     socket.on("LEAVE_ROOM", function (callback) {
       if (!isClient(socket)) return false;
@@ -95,6 +123,7 @@ module.exports = function (io, clients, rooms) {
 
     });
   });
+
 
   function hostARoom(socket, roomID, clientID, readableName, size, game) {
     if (isInRoom(socket, clientID)) {
@@ -183,14 +212,14 @@ module.exports = function (io, clients, rooms) {
       if (!err && client) {
         var room = rooms[roomID];
 
-        // deletes client from room.clients[Player{},Player{},Player{}] array
+        // deletes client from room.clients[Client{},Client{},Client{}] array
         var roomClients = room.clients;
         var index = roomClients.findIndex(function (o) {
           return o.id === client.id;
         })
         if (index !== -1) roomClients.splice(index, 1);
 
-        // if the player is still there, update player object
+        // if the Client is still there, update Client object
         if (clients[client.id]) {
           clients[client.id].isHost = null;
           clients[client.id].room = null;

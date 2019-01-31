@@ -46,7 +46,19 @@ const getters = {
     } else {
       return state.broadcastMessages.slice(-10);
     }
-  }
+  },
+  isAllReady(state) {
+    if (state.room.clients.filter(e => {
+        console.log(e.ready);
+        return e.ready === false;
+      }).length <= 1) {
+      console.log("true");
+      // only one is not ready which is the host, so all are ready
+      return true;
+    } else {
+      return false;
+    }
+  },
 };
 
 const mutations = {
@@ -57,14 +69,16 @@ const mutations = {
     console.log(user);
     // eslint-disable-next-line
     console.log(state.users);
-    // delete user from local users
-    var disconnectedUser = state.users.find(x => x.id === user.id);
-    var posInArray = state.users.indexOf(disconnectedUser);
-    // delete state.users[posInArray];
-    state.users.splice(posInArray, 1);
-    //save disconnects to show on screen
-    user.disconnected = true;
-    state.broadcastMessages.push(user);
+    // delete user from local users, if not disconnected before name pick
+    if (user) {
+      var disconnectedUser = state.users.find(x => x.id === user.id);
+      var posInArray = state.users.indexOf(disconnectedUser);
+      // delete state.users[posInArray];
+      state.users.splice(posInArray, 1);
+      //save disconnects to show on screen
+      user.disconnected = true;
+      state.broadcastMessages.push(user);
+    }
   },
   SOCKET_JOINED_SERVER(state, user) {
     // eslint-disable-next-line
@@ -111,9 +125,18 @@ const mutations = {
   SOCKET_CHAT_MESSAGE(state, message) {
     // eslint-disable-next-line
     console.log("%c socket_chat_message", "color:green");
-    // eslint-disable-next-line
-    console.log(message);
     state.messages.push(message)
+  },
+  SOCKET_START_GAME(state, payload) {
+    // eslint-disable-next-line
+    console.log("%c socket_start_game", "color:green");
+    router.push({
+      name: "game",
+      params: {
+        gameID: state.room.id
+      }
+    });
+
   },
   setUser(state, payload) {
     state.user = payload;

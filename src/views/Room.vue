@@ -56,6 +56,9 @@ export default {
     };
   },
   computed: {
+    username() {
+      return this.$store.getters.name;
+    },
     messages() {
       return this.$store.getters.messages;
     },
@@ -67,7 +70,7 @@ export default {
     submit(e) {
       e.preventDefault();
 
-      //Room ID not needed, the Server will look for the ID via socket.id of Sender
+      // TODO client could change own name here
       this.$socket.emit("SEND_MESSAGE", {
         name: this.username,
         message: this.chatMessage
