@@ -7,40 +7,7 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-toolbar color="primary" dark>
-          <v-toolbar-title>{{room.readableName}} {{room.game}}</v-toolbar-title>
-
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click="leave" fab small>
-            <v-icon>exit_to_app</v-icon>
-          </v-btn>
-        </v-toolbar>
-
-        <div>
-          <ul class="messages" v-chat-scroll="{always: false, smooth: true}">
-            <li class="message" v-for="(m, index) in messages" :key="index">
-              <span
-                v-if="m.type!='server'"
-                class="font-weight-bold"
-                v-bind:style="{ color: m.color }"
-              >{{ m.name }}:</span>
-              {{m.message}}
-            </li>
-          </ul>
-        </div>
-        <v-form class="chatMessage-form">
-          <v-text-field
-            id="chatInput"
-            v-model="chatMessage"
-            append-icon="send"
-            box
-            label="type here"
-            type="text"
-            @keydown.enter="submit"
-            @click:append="submit"
-            class="myInput mb-0"
-          ></v-text-field>
-        </v-form>
+        <app-chat-box/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -50,6 +17,7 @@
 import PeopleInRoomList from "@/components/PeopleInRoomList.vue";
 import GameInfoBox from "@/components/GameInfoBox.vue";
 import Connect4 from "@/components/game/Connect_4.vue";
+import ChatBox from "@/components/ChatBox.vue";
 export default {
   data() {
     return {
@@ -59,6 +27,9 @@ export default {
   computed: {
     messages() {
       return this.$store.getters.messages;
+    },
+    username() {
+      this.$store.getters.name;
     },
     room() {
       return this.$store.getters.room;
@@ -83,6 +54,7 @@ export default {
     }
   },
   components: {
+    "app-chat-box": ChatBox,
     "app-people-in-room-list": PeopleInRoomList,
     "app-game-info-box": GameInfoBox,
     "app-connect-4": Connect4

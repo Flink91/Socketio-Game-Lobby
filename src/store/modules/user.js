@@ -127,17 +127,6 @@ const mutations = {
     console.log("%c socket_chat_message", "color:green");
     state.messages.push(message)
   },
-  SOCKET_START_GAME(state, payload) {
-    // eslint-disable-next-line
-    console.log("%c socket_start_game", "color:green");
-    router.push({
-      name: "game",
-      params: {
-        gameID: state.room.id
-      }
-    });
-
-  },
   setUser(state, payload) {
     state.user = payload;
   },

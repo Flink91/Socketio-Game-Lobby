@@ -41,7 +41,7 @@ export default {
     return {
       users: [],
       ready: false,
-      options: null,
+      options: { board: [6, 7] },
       isClicked: false
     };
   },

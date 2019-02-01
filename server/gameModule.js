@@ -5,13 +5,14 @@ module.exports = function (io) {
     socket.on("START_GAME", function (options, callback) {
       // create new room ID on host
       console.log(options);
+
+      // Start player turn
     });
 
-    // START TURN OF A PLAYER
+    socket.on("GAME_TURN", function (turn, callback) {
 
-    // GET TURN CHOICE
 
-    //
+    });
 
   });
 };

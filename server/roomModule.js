@@ -1,6 +1,7 @@
 module.exports = function (io, clients, rooms) {
   var uuid = require("node-uuid");
   var Room = require("./room.js");
+  var Game = require("./game.js");
   io().on('connection', socket => {
 
     //HOST A ROOM
@@ -48,8 +49,28 @@ module.exports = function (io, clients, rooms) {
       if (!isClient(socket)) return false;
       // join existing room
       var room = findRoomByID(socket.id, rooms);
+      // new game 'class'
+      room.game = new Game(room.id, "Connect Four", Object.values(room.clients));
+      console.log(Object.values(room.clients));
+      room.game.startGame(options);
+      options.currentPlayer = room.game.players[room.game.currentPlayer];
       io().sockets.in(room.id).emit("START_GAME", options);
       callback();
+    });
+
+    //TOGGLE READY MODE IN ROOM
+    socket.on("GAME_TURN", function (turn, callback) {
+      if (!isClient(socket)) return false;
+      // join existing room
+      var room = findRoomByID(socket.id, rooms);
+
+      if (room.game.nextTurn(turn)) {
+        console.log("huh?");
+        console.log(room.game.boardState);
+        io().sockets.in(room.id).emit("GAME_TURN", room.game.boardState);
+      } else {
+
+      }
     });
 
     //SEND A CHAT MESSAGE
@@ -59,8 +80,6 @@ module.exports = function (io, clients, rooms) {
       // find out which room the client is in
       msg.color = clients[socket.id].color;
       var room = findRoomByID(socket.id, rooms);
-      console.log("message");
-      console.log(msg);
       io().sockets
         .in(room.id)
         .emit("CHAT_MESSAGE", msg);
