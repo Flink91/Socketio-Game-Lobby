@@ -12,6 +12,9 @@ const getters = {
   game(state) {
     return state.game;
   },
+  winner(state) {
+    return state.winner;
+  },
   board(state) {
     return state.boardState;
   },
@@ -33,6 +36,14 @@ const mutations = {
     state.isRunning = false;
     state.winner = null;
   },
+  endGame(state, payload) {
+    if (payload == -1) {
+      alert("Draw! \n Returning to Lobby...");
+    } else {
+      alert(state.currentPlayer.name + " won!\n Returning to Lobby...");
+      router.go(-1);
+    }
+  },
   setWinner(state, payload) {
     state.winner = payload;
   },
@@ -51,6 +62,16 @@ const actions = {
   }, payload) {
     commit("setBoard", payload[0]);
     commit("setCurrentPlayer", payload[1]);
+  },
+  SOCKET_END_GAME({
+    commit
+  }, payload) {
+    commit("setBoard", payload[0]);
+    setTimeout(() => {
+      commit("endGame", payload[1]);
+      commit("clearGame");
+    }, 100);
+
   },
   SOCKET_START_GAME({
     state,

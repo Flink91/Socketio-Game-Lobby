@@ -67,16 +67,15 @@ module.exports = function (io, clients, rooms) {
       // join existing room
       var room = findRoomByID(socket.id, rooms);
 
-      // console.log("check if it is your turn");
-      // console.log(socket.id);
-      // console.log(room.game.players[room.game.currentPlayer].id);
       if (room.game.players[room.game.currentPlayer].id != socket.id) {
         return false;
       }
       if (room.game.nextTurn(turn)) {
         io().sockets.in(room.id).emit("GAME_TURN", room.game.boardState, room.game.players[room.game.currentPlayer]);
       } else {
-
+        //the game ended
+        io().sockets.in(room.id).emit("END_GAME", room.game.boardState, room.game.winner);
+        room.game = undefined;
       }
     });
 

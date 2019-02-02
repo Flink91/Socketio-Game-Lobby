@@ -4,6 +4,8 @@ function Game(id, name, players) {
   this.players = players;
   this.currentPlayer = 0;
   this.boardState = [];
+  this.winner = -1;
+  this.countToWin = 4;
 }
 
 Game.prototype.startGame = function (options) {
@@ -25,14 +27,17 @@ Game.prototype.startGame = function (options) {
 
 Game.prototype.nextTurn = function (turn) {
 
-  // if (this.checkWin()) return false;
-
   var x = turn[0];
   var y = turn[1];
 
   y = this.dropToBottom(x, y);
 
   this.boardState[y][x] = this.currentPlayer + 1;
+
+  if (this.checkWin()) {
+    this.winner = this.players[this.currentPlayer].name;
+    return false;
+  }
 
   if (this.players.length <= this.currentPlayer + 1) {
     this.currentPlayer = 0;
@@ -58,9 +63,25 @@ Game.prototype.dropToBottom = function (x, y) {
 };
 
 Game.prototype.checkWin = function () {
-  if (horizontalWin() || verticalWin() || diagonalWin()) return true;
+  var board = this.boardState;
 
-  function horizontalWin() {
+  if (horizontalWin(board, this.countToWin)) {
+    console.log("horizontal win!");
+    return true;
+  }
+  if (verticalWin(board, this.countToWin)) {
+    console.log("vertical win!");
+    return true;
+  }
+  if (diagonalWin(board, this.countToWin)) {
+    console.log("diagonal win!");
+    return true;
+  } else {
+    console.log("no win detected");
+    return false;
+  }
+
+  function horizontalWin(board, countToWin) {
     var currentValue = null,
       previousValue = 0,
       tally = 0;
@@ -69,15 +90,15 @@ Game.prototype.checkWin = function () {
     // ever reaches four, return true for a win.
     for (var y = 0; y <= 5; y++) {
       for (var x = 0; x <= 6; x++) {
-        console.log(this.boardState);
-        currentValue = this.boardState[y][x];
+        currentValue = board[y][x];
+
         if (currentValue === previousValue && currentValue !== 0) {
           tally += 1;
         } else {
           // Reset the tally if you find a gap.
           tally = 0;
         }
-        if (tally === config.countToWin - 1) {
+        if (tally === countToWin - 1) {
           return true;
         }
         previousValue = currentValue;
@@ -92,7 +113,7 @@ Game.prototype.checkWin = function () {
     return false;
   }
 
-  function verticalWin() {
+  function verticalWin(board, countToWin) {
     var currentValue = null,
       previousValue = 0,
       tally = 0;
@@ -101,14 +122,14 @@ Game.prototype.checkWin = function () {
     // series ever reaches four, return true for a win.
     for (var x = 0; x <= 6; x++) {
       for (var y = 0; y <= 5; y++) {
-        currentValue = this.boardState[y][x];
+        currentValue = board[y][x];
         if (currentValue === previousValue && currentValue !== 0) {
           tally += 1;
         } else {
           // Reset the tally if you find a gap.
           tally = 0;
         }
-        if (tally === config.countToWin - 1) {
+        if (tally === countToWin - 1) {
           return true;
         }
         previousValue = currentValue;
@@ -123,7 +144,7 @@ Game.prototype.checkWin = function () {
     return false;
   }
 
-  function diagonalWin() {
+  function diagonalWin(board, countToWin) {
     var x = null,
       y = null,
       xtemp = null,
@@ -138,14 +159,14 @@ Game.prototype.checkWin = function () {
       ytemp = 0;
 
       while (xtemp <= 6 && ytemp <= 5) {
-        currentValue = this.boardState[ytemp][xtemp];
+        currentValue = board[ytemp][xtemp];
         if (currentValue === previousValue && currentValue !== 0) {
           tally += 1;
         } else {
           // Reset the tally if you find a gap.
           tally = 0;
         }
-        if (tally === config.countToWin - 1) {
+        if (tally === countToWin - 1) {
           return true;
         }
         previousValue = currentValue;
@@ -165,14 +186,14 @@ Game.prototype.checkWin = function () {
       ytemp = 0;
 
       while (0 <= xtemp && ytemp <= 5) {
-        currentValue = this.boardState[ytemp][xtemp];
+        currentValue = board[ytemp][xtemp];
         if (currentValue === previousValue && currentValue !== 0) {
           tally += 1;
         } else {
           // Reset the tally if you find a gap.
           tally = 0;
         }
-        if (tally === config.countToWin - 1) {
+        if (tally === countToWin - 1) {
           return true;
         }
         previousValue = currentValue;
@@ -192,14 +213,14 @@ Game.prototype.checkWin = function () {
       ytemp = y;
 
       while (xtemp <= 6 && ytemp <= 5) {
-        currentValue = this.boardState[ytemp][xtemp];
+        currentValue = board[ytemp][xtemp];
         if (currentValue === previousValue && currentValue !== 0) {
           tally += 1;
         } else {
           // Reset the tally if you find a gap.
           tally = 0;
         }
-        if (tally === config.countToWin - 1) {
+        if (tally === countToWin - 1) {
           return true;
         }
         previousValue = currentValue;
@@ -219,14 +240,14 @@ Game.prototype.checkWin = function () {
       ytemp = y;
 
       while (0 <= xtemp && ytemp <= 5) {
-        currentValue = this.boardState[ytemp][xtemp];
+        currentValue = board[ytemp][xtemp];
         if (currentValue === previousValue && currentValue !== 0) {
           tally += 1;
         } else {
           // Reset the tally if you find a gap.
           tally = 0;
         }
-        if (tally === config.countToWin - 1) {
+        if (tally === countToWin - 1) {
           return true;
         }
         previousValue = currentValue;
@@ -244,7 +265,6 @@ Game.prototype.checkWin = function () {
     return false;
   }
 }
-
 
 
 module.exports = Game;

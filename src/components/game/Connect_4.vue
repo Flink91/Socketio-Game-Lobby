@@ -1,10 +1,7 @@
 <template>
   <v-container grid-list-sm class="py-0 px-0" align-content-center>
-    <v-flex xs12>
-      <h3>{{currentPlayer.name || false}}'s turn</h3>
-      <p>
-        <i>Board: {{board}}</i>
-      </p>
+    <v-flex xs12 align-content-center>
+      <h2>{{currentPlayer.name || false}}'s turn</h2>
     </v-flex>
 
     <v-flex xs12>
@@ -16,7 +13,9 @@
                 class="piece"
                 @click="clicked(x_index,y_index)"
                 :style="{backgroundColor: pieceColors[board[y_index][x_index]]}"
-              >{{x_index}}|{{y_index}}</div>
+              >
+                <!-- <small>{{x_index}}|{{y_index}}</small> -->
+              </div>
             </td>
           </tr>
         </tbody>
@@ -41,11 +40,16 @@ export default {
     },
     room() {
       return this.$store.getters.room;
+    },
+    winner() {
+      return this.$store.getters.winner;
     }
   },
   methods: {
     clicked(x, y) {
-      this.$socket.emit("GAME_TURN", [x, y]);
+      if (this.winner === null) {
+        this.$socket.emit("GAME_TURN", [x, y]);
+      }
     }
   },
   components: {}

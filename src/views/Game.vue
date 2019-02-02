@@ -35,42 +35,11 @@ export default {
       return this.$store.getters.room;
     }
   },
-  methods: {
-    submit(e) {
-      e.preventDefault();
-
-      //Room ID not needed, the Server will look for the ID via socket.id of Sender
-      this.$socket.emit("SEND_MESSAGE", {
-        name: this.username,
-        message: this.chatMessage
-      });
-      this.chatMessage = "";
-    },
-    leave() {
-      this.$socket.emit("LEAVE_ROOM", () => {
-        this.$store.commit("clearMessages");
-        this.$router.push("/");
-      });
-    }
-  },
   components: {
     "app-chat-box": ChatBox,
     "app-people-in-room-list": PeopleInRoomList,
     "app-game-info-box": GameInfoBox,
     "app-connect-4": Connect4
-  },
-  beforeRouteLeave(to, from, next) {
-    const answer = window.confirm("Do you really want to leave the game?");
-    if (answer) {
-      this.$socket.emit("LEAVE_ROOM", () => {
-        this.$store.commit("clearMessages");
-        this.$store.commit("clearGame");
-        this.dialog = false;
-        next();
-      });
-    } else {
-      next(false);
-    }
   }
 };
 </script>
