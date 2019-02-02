@@ -3,6 +3,7 @@ import router from "../../router";
 const state = {
   currentPlayer: null,
   boardState: [],
+  options: [],
   isRunning: true,
   winner: null,
 };
@@ -26,14 +27,17 @@ const mutations = {
   setBoard(state, payload) {
     state.boardState = payload;
   },
+  clearGame(state) {
+    state.boardState = [];
+    state.currentPlayer = null;
+    state.isRunning = false;
+    state.winner = null;
+  },
   setWinner(state, payload) {
     state.winner = payload;
   },
   setRunning(state, payload) {
     state.isRunning = payload;
-  },
-  SOCKET_GAME_TURN(state, payload) {
-    state.boardState = payload;
   },
   SOCKET_END_GAME(state, payload) {
     state.winner = payload.winner;
@@ -42,6 +46,12 @@ const mutations = {
 };
 
 const actions = {
+  SOCKET_GAME_TURN({
+    commit
+  }, payload) {
+    commit("setBoard", payload[0]);
+    commit("setCurrentPlayer", payload[1]);
+  },
   SOCKET_START_GAME({
     state,
     commit,
@@ -64,7 +74,7 @@ const actions = {
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0]
     ]);
-    commit("setCurrentPlayer", payload.currentPlayer);
+    commit("setCurrentPlayer", payload[1]);
   },
 };
 

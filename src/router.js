@@ -6,6 +6,7 @@ import Rooms from "./views/Rooms.vue";
 Vue.use(Router);
 
 export default new Router({
+
   routes: [{
       path: "/",
       name: "home",

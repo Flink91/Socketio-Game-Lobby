@@ -3,11 +3,8 @@
     <v-flex xs12>
       <v-toolbar color="primary" dark>
         <v-toolbar-title>{{room.readableName}}</v-toolbar-title>
-
         <v-spacer></v-spacer>
-        <v-btn color="error" @click="leave" fab small>
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
+        <app-leave-button/>
       </v-toolbar>
 
       <div>
@@ -40,6 +37,7 @@
 </template>
 
 <script>
+import LeaveButton from "@/components/shared/LeaveButton.vue";
 export default {
   data() {
     return {
@@ -67,13 +65,10 @@ export default {
         message: this.chatMessage
       });
       this.chatMessage = "";
-    },
-    leave() {
-      this.$socket.emit("LEAVE_ROOM", () => {
-        this.$store.commit("clearMessages");
-        this.$router.push("/");
-      });
     }
+  },
+  components: {
+    "app-leave-button": LeaveButton
   }
 };
 </script>

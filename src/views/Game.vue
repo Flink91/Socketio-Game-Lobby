@@ -58,6 +58,19 @@ export default {
     "app-people-in-room-list": PeopleInRoomList,
     "app-game-info-box": GameInfoBox,
     "app-connect-4": Connect4
+  },
+  beforeRouteLeave(to, from, next) {
+    const answer = window.confirm("Do you really want to leave the game?");
+    if (answer) {
+      this.$socket.emit("LEAVE_ROOM", () => {
+        this.$store.commit("clearMessages");
+        this.$store.commit("clearGame");
+        this.dialog = false;
+        next();
+      });
+    } else {
+      next(false);
+    }
   }
 };
 </script>

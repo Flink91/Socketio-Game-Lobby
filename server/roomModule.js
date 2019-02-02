@@ -45,29 +45,36 @@ module.exports = function (io, clients, rooms) {
     });
 
     //TOGGLE READY MODE IN ROOM
-    socket.on("START_GAME", function (options, callback) {
+    socket.on("START_GAME", function (options) {
       if (!isClient(socket)) return false;
-      // join existing room
+
       var room = findRoomByID(socket.id, rooms);
-      // new game 'class'
+
       room.game = new Game(room.id, "Connect Four", Object.values(room.clients));
       console.log(Object.values(room.clients));
       room.game.startGame(options);
-      options.currentPlayer = room.game.players[room.game.currentPlayer];
-      io().sockets.in(room.id).emit("START_GAME", options);
-      callback();
+      //pick random starting player
+      let currentPlayer = room.game.players[room.game.currentPlayer];
+      console.log("currentplayer: ");
+      console.log(currentPlayer);
+      console.log(options);
+      io().sockets.in(room.id).emit("START_GAME", options, currentPlayer);
     });
 
     //TOGGLE READY MODE IN ROOM
-    socket.on("GAME_TURN", function (turn, callback) {
+    socket.on("GAME_TURN", function (turn) {
       if (!isClient(socket)) return false;
       // join existing room
       var room = findRoomByID(socket.id, rooms);
 
+      // console.log("check if it is your turn");
+      // console.log(socket.id);
+      // console.log(room.game.players[room.game.currentPlayer].id);
+      if (room.game.players[room.game.currentPlayer].id != socket.id) {
+        return false;
+      }
       if (room.game.nextTurn(turn)) {
-        console.log("huh?");
-        console.log(room.game.boardState);
-        io().sockets.in(room.id).emit("GAME_TURN", room.game.boardState);
+        io().sockets.in(room.id).emit("GAME_TURN", room.game.boardState, room.game.players[room.game.currentPlayer]);
       } else {
 
       }

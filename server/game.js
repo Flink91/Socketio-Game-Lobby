@@ -8,7 +8,7 @@ function Game(id, name, players) {
 
 Game.prototype.startGame = function (options) {
   // calculate starting player, set options
-  this.currentPlayer = Math.floor((Math.random() * this.players.length) + 1);
+  this.currentPlayer = Math.floor((Math.random() * (this.players.length - 1)));
   // TODO base on options
   console.log("Starting game. Options:");
   console.log(options);
@@ -27,24 +27,34 @@ Game.prototype.nextTurn = function (turn) {
 
   // if (this.checkWin()) return false;
 
-  console.log(this.boardState);
-  console.log(this.currentPlayer);
-
   var x = turn[0];
   var y = turn[1];
 
-  this.boardState[y][x] = this.currentPlayer;
+  y = this.dropToBottom(x, y);
 
-  if (this.players.length <= this.currentPlayer) {
-    this.currentPlayer = 1;
+  this.boardState[y][x] = this.currentPlayer + 1;
+
+  if (this.players.length <= this.currentPlayer + 1) {
+    this.currentPlayer = 0;
   } else {
     this.currentPlayer++;
   }
 
+  console.log("boardstate");
   console.log(this.boardState);
   console.log(this.currentPlayer);
 
   return true;
+
+};
+
+Game.prototype.dropToBottom = function (x, y) {
+  for (let y_axis = 5; y_axis > y; y_axis--) {
+    if (this.boardState[y_axis][x] === 0) {
+      return y_axis;
+    }
+  }
+  return y;
 };
 
 Game.prototype.checkWin = function () {

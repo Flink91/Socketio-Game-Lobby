@@ -48,12 +48,10 @@ const getters = {
     }
   },
   isAllReady(state) {
-    if (state.room.clients.filter(e => {
-        console.log(e.ready);
+    if ((state.room.clients.filter(e => {
         return e.ready === false;
-      }).length <= 1) {
-      console.log("true");
-      // only one is not ready which is the host, so all are ready
+      }).length <= 1) && state.room.clients.length > 1) {
+      // only one is not ready which is the host and there are at least 2 clients, so all are ready
       return true;
     } else {
       return false;

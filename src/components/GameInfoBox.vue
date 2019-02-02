@@ -58,7 +58,7 @@ export default {
       }, 3000);
     },
     startGame() {
-      this.$socket.emit("START_GAME", this.options, function() {});
+      this.$socket.emit("START_GAME", this.options);
     }
   },
   computed: {
