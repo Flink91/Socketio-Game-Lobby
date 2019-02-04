@@ -6,7 +6,6 @@ const path = require("path");
 
 //needed for backend socket server
 var uuid = require("node-uuid");
-var Room = require("./server/room.js");
 var Client = require("./server/client.js");
 
 const app = express();
@@ -69,5 +68,6 @@ io.on("connection", function (socket) {
 
 // Some complicated moduling to keep this file smaller. SocketIO is passed via Instance
 // order important !
-require('./server/roomModule.js')(getIOInstance, clients, rooms);
-require('./server/gameModule.js')(getIOInstance);
+require('./server/socketHandlers/roomSockets.js')(getIOInstance, clients, rooms);
+require('./server/socketHandlers/chatSockets.js')(getIOInstance, clients, rooms);
+require('./server/socketHandlers/gameSockets.js')(getIOInstance, clients, rooms);
