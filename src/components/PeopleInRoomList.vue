@@ -2,7 +2,7 @@
   <v-layout row>
     <v-flex xs12>
       <v-card class="in-room-card">
-        <v-toolbar color="white">
+        <v-toolbar dense color="white">
           <v-toolbar-title>People in Room: ({{room.clients.length}}/{{room.size}})</v-toolbar-title>
         </v-toolbar>
         <v-card-text class="in-room-card-text">

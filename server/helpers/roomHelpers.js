@@ -1,6 +1,6 @@
 module.exports = function (io, clients, rooms) {
 
-  var Room = require("../room.js");
+  var Room = require("../classes/room.js");
 
   function hostARoom(sockets, socket, rooms, roomID, clients, clientID, readableName, size, game) {
     if (isInRoom(clients, clientID)) {
@@ -23,7 +23,7 @@ module.exports = function (io, clients, rooms) {
 
         socket.emit("HOST");
         sockets.emit("UPDATE_ROOMS", rooms);
-        getPeopleInRoom(sockets, clientID, roomID);
+        getPeopleInRoom(clientID, roomID);
       } else {
         // handle error message
         console.log(socket.id + " FAILED to join room: " + roomID);
@@ -69,7 +69,7 @@ module.exports = function (io, clients, rooms) {
         );
 
         io().sockets.emit("UPDATE_ROOMS", rooms);
-        getPeopleInRoom(sockets, clientID, roomID);
+        getPeopleInRoom(clientID, roomID);
       } else {
         // handle error message
         console.log(socket.id + " FAILED to join room: " + roomID);
@@ -152,7 +152,7 @@ module.exports = function (io, clients, rooms) {
     }
   }
 
-  function getPeopleInRoom(sockets, clientID) {
+  function getPeopleInRoom(clientID, roomID) {
     var room = findRoomByID(clientID, rooms);
     if (room != null) {
       io().sockets.in(room.id).emit("GET_ROOM_INFO", room);

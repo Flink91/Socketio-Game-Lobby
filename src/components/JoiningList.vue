@@ -2,7 +2,7 @@
   <v-layout row>
     <v-flex xs12>
       <v-card class="joining-card">
-        <v-toolbar color="white">
+        <v-toolbar dense color="white">
           <v-toolbar-title>People joining</v-toolbar-title>
         </v-toolbar>
         <v-card-text class="joining-card-text">

@@ -6,7 +6,7 @@ const path = require("path");
 
 //needed for backend socket server
 var uuid = require("node-uuid");
-var Client = require("./server/client.js");
+var Client = require("./server/classes/client.js");
 
 const app = express();
 

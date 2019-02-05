@@ -8,7 +8,7 @@
       </v-flex>
       <v-flex text-xs-center>
         <div class="square" :style="{'background-color':colors[color]}">
-          <span class="colorNumber">{{color+1}}</span>
+          <!-- <span class="colorNumber">{{color+1}}</span> -->
         </div>
       </v-flex>
       <v-flex text-xs-left>
@@ -72,9 +72,10 @@ export default {
 <style scoped>
 .square {
   display: inline-block;
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   max-width: 100px;
+  margin-top: 8px;
   border-radius: 5px;
   border: 2px solid grey;
   box-shadow: 0 0 4px 0px grey;

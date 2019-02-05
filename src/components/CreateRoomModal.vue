@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" max-width="600px">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
-        <v-toolbar color="primary" dark>
+        <v-toolbar dense color="primary" dark>
           <v-toolbar-title>New Room</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
@@ -55,7 +55,7 @@ export default {
     return {
       dialog: false,
       valid: true,
-      games: ["Just Chat", "Connect What", "Default"],
+      games: ["Connect 4", "Connect 4", "Connect 4"],
       gameSelect: null,
       gameSelectRules: [v => !!v || "A Game must be selected"],
       roomName: "",

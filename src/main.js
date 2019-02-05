@@ -16,7 +16,13 @@ Vue.config.productionTip = false;
 
 Vue.use(Vuetify, {
   theme: {
-    primary: colors.indigo.darken4
+    primary: "#3f51b5",
+    secondary: "#f44336",
+    accent: "#ffc107",
+    error: "#ff5722",
+    warning: "#ff9800",
+    info: "#00bcd4",
+    success: "#8bc34a"
   }
 });
 

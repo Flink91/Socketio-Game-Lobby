@@ -2,7 +2,7 @@
   <v-layout row>
     <v-flex xs12>
       <v-card>
-        <v-toolbar dark color="primary">
+        <v-toolbar dense dark color="primary">
           <v-toolbar-title>Rooms</v-toolbar-title>
 
           <v-spacer></v-spacer>

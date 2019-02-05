@@ -3,7 +3,7 @@
     <v-dialog :value="dialog" persistent max-width="600px">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
-        <v-toolbar color="primary" dark>
+        <v-toolbar dense color="primary" dark>
           <v-toolbar-title>Pick a name and a color!</v-toolbar-title>
         </v-toolbar>
         <v-card-text>

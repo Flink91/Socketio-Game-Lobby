@@ -39,3 +39,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.headline {
+  font-size: 16px;
+}
+</style>
+

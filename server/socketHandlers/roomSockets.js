@@ -1,7 +1,7 @@
 module.exports = function (io, clients, rooms) {
   var uuid = require("node-uuid");
-  require("../room.js");
-  require("../game.js");
+  require("../classes/room.js");
+  require("../classes/game.js");
   var roomHelpers = require('../helpers/roomHelpers.js')(io, clients, rooms);
 
   io().on('connection', socket => {

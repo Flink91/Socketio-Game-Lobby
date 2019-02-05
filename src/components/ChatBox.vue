@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex xs12>
-      <v-toolbar color="primary" dark>
+      <v-toolbar dense color="primary" dark>
         <v-toolbar-title>{{room.readableName}}</v-toolbar-title>
         <v-spacer></v-spacer>
         <app-leave-button/>

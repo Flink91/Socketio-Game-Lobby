@@ -1,6 +1,7 @@
 module.exports = function (io, clients, rooms) {
-  var roomHelpers = require('../helpers/roomHelpers.js')(io, clients, rooms);
 
+  var roomHelpers = require('../helpers/roomHelpers.js')(io, clients, rooms);
+  var Game = require("../classes/game.js");
   io().on('connection', socket => {
 
     //TOGGLE READY MODE IN ROOM
@@ -8,7 +9,6 @@ module.exports = function (io, clients, rooms) {
       if (!roomHelpers.isClient(socket)) return false;
 
       var room = roomHelpers.findRoomByID(socket.id, rooms);
-
       room.game = new Game(room.id, "Connect Four", Object.values(room.clients));
       console.log(Object.values(room.clients));
       room.game.startGame(options);
@@ -18,7 +18,7 @@ module.exports = function (io, clients, rooms) {
 
     //TOGGLE READY MODE IN ROOM
     socket.on("GAME_TURN", function (turn) {
-      if (!isClient(socket)) return false;
+      if (!roomHelpers.isClient(socket)) return false;
       // join existing room
       var room = roomHelpers.findRoomByID(socket.id, rooms);
 

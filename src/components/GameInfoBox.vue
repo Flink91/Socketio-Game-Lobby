@@ -2,7 +2,7 @@
   <v-layout row>
     <v-flex xs12>
       <v-card class="game-card">
-        <v-toolbar color="white">
+        <v-toolbar dense color="white">
           <v-toolbar-title class="game-card-title">Game Info</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
