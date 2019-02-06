@@ -151,6 +151,22 @@ const actions = {
     };
     router.push("/");
   },
+  SOCKET_HOST_LEFT({
+    state,
+    commit,
+    rootState
+  }, myparam) {
+    // eslint-disable-next-line
+    console.log("%c socket_host_left", "color:green");
+    state.room = null;
+    state.messages = [];
+    rootState.general.info = {
+      message: "The host left the room. Room was closed.",
+      type: "warning",
+      time: "4000"
+    };
+    router.push("/");
+  },
 };
 
 export default {

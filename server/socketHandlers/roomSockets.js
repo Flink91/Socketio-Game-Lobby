@@ -1,5 +1,5 @@
 module.exports = function (io, clients, rooms) {
-  var uuid = require("node-uuid");
+
   require("../classes/room.js");
   require("../classes/game.js");
   var roomHelpers = require('../helpers/roomHelpers.js')(io, clients, rooms);
@@ -8,11 +8,10 @@ module.exports = function (io, clients, rooms) {
 
     //HOST A ROOM
     socket.on("HOST", function (readableName, size, game, callback) {
-      if (clients[socket.id] == undefined) return false;
-      // create new room ID on host
-      var newRoomID = uuid.v4();
-      if (roomHelpers.hostARoom(io().sockets, socket, rooms, newRoomID, clients, socket.id, readableName, size, game)) {
-        callback(newRoomID);
+      var newroomID = roomHelpers.hostARoom(socket, socket.id, readableName, size, game);
+      if (newroomID !== false) {
+        socket.emit("HOST");
+        callback(newroomID);
       }
     });
 

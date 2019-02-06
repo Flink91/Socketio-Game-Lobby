@@ -1,58 +1,49 @@
 module.exports = function (io, clients, rooms) {
-
+  var uuid = require("node-uuid");
   var Room = require("../classes/room.js");
 
-  function hostARoom(sockets, socket, rooms, roomID, clients, clientID, readableName, size, game) {
+  function hostARoom(socket, clientID, readableName, size, game) {
     if (isInRoom(clients, clientID)) {
-      socket.emit("ERROR", {
-        message: "You are already connected to a room",
-        type: "error"
-      });
+      sendError(socket, "You are already in a room");
+      return false;
+    } else if (clients[socket.id] == undefined) {
+      sendError(socket, "You are not known on the server");
       return false;
     }
-    if (clients[socket.id] == undefined) return false;
+
+    var roomID = uuid.v4();
+    rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, game);
 
     socket.join(roomID, function (err) {
       if (!err) {
         clients[socket.id].isHost = true;
         clients[socket.id].room = roomID;
-
-        rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, game);
         console.log(clients[clientID].name + " has created room: " +
           rooms[roomID].readableName + " with size: " + size);
-
-        socket.emit("HOST");
-        sockets.emit("UPDATE_ROOMS", rooms);
         getPeopleInRoom(clientID, roomID);
+        return roomID;
       } else {
-        // handle error message
         console.log(socket.id + " FAILED to join room: " + roomID);
-        return false;
+        sendError(socket, err);
+        return roomID;
       }
     });
-
-    return true;
+    return roomID;
   }
 
   function connectClientToRoom(socket, roomID, clientID) {
     if (isInRoom(clients, clientID)) {
-      socket.emit("ERROR", {
-        message: "You are already connected to a room",
-        type: "error"
-      });
+      sendError(socket, "You are already in a room");
       return false;
-    }
-    if (clients[socket.id] == undefined) return false;
-
-    // if room exists and is full
-    if (rooms[roomID]) {
-      if (rooms[roomID].size <= rooms[roomID].clients.length) {
-        socket.emit("ERROR", {
-          message: "This room is full",
-          type: "error"
-        });
-        return false;
-      }
+    } else if (clients[socket.id] == undefined) {
+      sendError(socket, "You are not known on the server");
+      return false;
+    } else if (!rooms[roomID]) {
+      sendError(socket, "This room does not exist anymore");
+      return false;
+    } else if (rooms[roomID].size <= rooms[roomID].clients.length) {
+      sendError(socket, "This room is full");
+      return false;
     }
 
     socket.join(roomID, function (err) {
@@ -70,24 +61,24 @@ module.exports = function (io, clients, rooms) {
 
         io().sockets.emit("UPDATE_ROOMS", rooms);
         getPeopleInRoom(clientID, roomID);
+        return true;
       } else {
-        // handle error message
-        console.log(socket.id + " FAILED to join room: " + roomID);
+        sendError(socket, err);
         return false;
       }
     });
-
     return true;
   }
 
   /**
-   * leave room in socket logic, remove client from room.clients[], check if * room is now empty and update Room List and Room Info
+   * leave room in socket logic, remove client from room.clients[], check if room is now empty and update Room List and Room Info
    */
   function leaveRoom(client, roomID) {
 
     client.leave(roomID, function (err) {
       if (!err && client) {
         var room = rooms[roomID];
+
 
         // deletes client from room.clients[Client{},Client{},Client{}] array
         var roomClients = room.clients;
@@ -96,7 +87,14 @@ module.exports = function (io, clients, rooms) {
         })
         if (index !== -1) roomClients.splice(index, 1);
 
-        // if the Client is still there, update Client object
+
+        //if the host leaves, all others are kicked and the room is deleted
+        if (clients[client.id].isHost) {
+          console.log(clients[client.id].isHost);
+          io().sockets.in(roomID).emit("HOST_LEFT");
+        }
+
+        // if the Client is still online, update Client object
         if (clients[client.id]) {
           clients[client.id].isHost = null;
           clients[client.id].room = null;
@@ -107,16 +105,13 @@ module.exports = function (io, clients, rooms) {
           deleteRoom(roomID);
         }
 
+
         // Emit changes
         io().sockets.emit("UPDATE_ROOMS", rooms);
         io().sockets.in(roomID).emit("GET_ROOM_INFO", room);
 
       } else {
-        socket.emit("ERROR", {
-          message: err,
-          type: "error"
-        });
-        console.log(err);
+        sendError(socket, err);
         return false;
       }
     });
@@ -178,6 +173,13 @@ module.exports = function (io, clients, rooms) {
       }
     }
     return null;
+  }
+
+  function sendError(socket, err) {
+    socket.emit("ERROR", {
+      message: err,
+      type: "error"
+    });
   }
 
   return {
