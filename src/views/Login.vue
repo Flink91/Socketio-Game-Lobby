@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-sm text-xs-center>
+  <v-container grid-list-md text-xs-center>
     <v-layout row wrap justify-center>
       <v-flex xs12>
         <h1>Connect 4</h1>

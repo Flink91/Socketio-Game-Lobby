@@ -2,7 +2,7 @@
   <div>
     <app-join-modal/>
 
-    <v-container grid-list-sm v-if="name">
+    <v-container grid-list-md v-if="name">
       <v-layout row wrap>
         <v-flex xs12 sm8 lg9>
           <app-room-list/>

@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-sm class="py-1 px-1">
+  <v-container grid-list-md class="py-1 px-1">
     <v-layout row wrap>
       <v-flex xs12 md8>
         <app-connect-4/>

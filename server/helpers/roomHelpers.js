@@ -74,47 +74,51 @@ module.exports = function (io, clients, rooms) {
    * leave room in socket logic, remove client from room.clients[], check if room is now empty and update Room List and Room Info
    */
   function leaveRoom(client, roomID) {
+    //socket disconnected abruptly. No .leave() is needed then
+    var room = rooms[roomID];
 
-    client.leave(roomID, function (err) {
-      if (!err && client) {
-        var room = rooms[roomID];
+    // deletes client from room.clients[Client{},Client{},Client{}] array
+    var roomClients = room.clients;
+    var index = roomClients.findIndex(function (o) {
+      return o.id === client.id;
+    })
+    if (index !== -1) roomClients.splice(index, 1);
 
+    //if the host leaves, all others are kicked and the room is deleted
+    console.log(clients[client.id]);
+    if (clients[client.id].isHost) {
+      console.log(clients[client.id].isHost);
+      io().sockets.in(roomID).emit("HOST_LEFT");
+      io().sockets.emit("UPDATE_ROOMS", rooms);
+    }
 
-        // deletes client from room.clients[Client{},Client{},Client{}] array
-        var roomClients = room.clients;
-        var index = roomClients.findIndex(function (o) {
-          return o.id === client.id;
-        })
-        if (index !== -1) roomClients.splice(index, 1);
+    // check if room now empty => delete
+    if (room.clients.length <= 0) {
+      deleteRoom(roomID);
+    }
 
+    // Emit changes
+    io().sockets.emit("UPDATE_ROOMS", rooms);
+    io().sockets.in(roomID).emit("GET_ROOM_INFO", room);
 
-        //if the host leaves, all others are kicked and the room is deleted
-        if (clients[client.id].isHost) {
-          console.log(clients[client.id].isHost);
-          io().sockets.in(roomID).emit("HOST_LEFT");
+    if (client.connected) {
+
+      client.leave(roomID, function (err) {
+        if (!err) {
+
+          // if the Client is still online, update Client object
+          if (clients[client.id]) {
+            clients[client.id].isHost = null;
+            clients[client.id].ready = false;
+            clients[client.id].room = null;
+          }
+
+        } else {
+          sendError(socket, err);
+          return false;
         }
-
-        // if the Client is still online, update Client object
-        if (clients[client.id]) {
-          clients[client.id].isHost = null;
-          clients[client.id].room = null;
-        }
-
-        // check if room now empty => delete
-        if (room.clients.length <= 0) {
-          deleteRoom(roomID);
-        }
-
-
-        // Emit changes
-        io().sockets.emit("UPDATE_ROOMS", rooms);
-        io().sockets.in(roomID).emit("GET_ROOM_INFO", room);
-
-      } else {
-        sendError(socket, err);
-        return false;
-      }
-    });
+      });
+    }
     return true;
   }
 

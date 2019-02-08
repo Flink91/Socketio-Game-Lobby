@@ -9,8 +9,18 @@ module.exports = function (io, clients, rooms) {
       if (!roomHelpers.isClient(socket)) return false;
 
       var room = roomHelpers.findRoomByID(socket.id, rooms);
+
+      //game is started => switch all player to not ready in the lobby
+      console.log(room.clients);
+      room.clients.forEach(function (client) {
+        client.ready = false;
+      });
+      console.log(room.clients);
+      io().sockets.in(room.id).emit("GET_ROOM_INFO", room);
+
       room.game = new Game(room.id, "Connect Four", Object.values(room.clients));
       console.log(Object.values(room.clients));
+
       room.game.startGame(options);
       let currentPlayer = room.game.players[room.game.currentPlayer];
       io().sockets.in(room.id).emit("START_GAME", options, currentPlayer);

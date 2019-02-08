@@ -52,11 +52,9 @@ module.exports = function (io, clients, rooms) {
       console.log("trying to kick " + toBeKicked.id);
 
       if (toBeKicked == undefined) return false;
-      console.log("no undefined");
       if (!roomHelpers.isClient(toBeKicked)) return false;
-      console.log("isclient");
       if (!roomHelpers.isInRoom(clients, toBeKicked.id)) return false;
-      console.log("is in room");
+
 
       if (clients[socket.id].isHost) {
         var room = roomHelpers.findRoomByID(toBeKicked.id, rooms);
@@ -91,8 +89,9 @@ module.exports = function (io, clients, rooms) {
 
     //on disconnect remove from room too
     socket.on('disconnect', function () {
-
-      if (roomHelpers.isInRoom(socket, socket.id)) {
+      console.log("disconnected from room");
+      if (roomHelpers.isInRoom(clients, socket.id)) {
+        console.log("is in room true");
         var roomID = clients[socket.id].room;
         io().sockets.in(roomID).emit("CHAT_MESSAGE", {
           name: "SERVER",
@@ -100,7 +99,7 @@ module.exports = function (io, clients, rooms) {
           message: clients[socket.id].name + " left",
           color: "#CCC"
         });
-        roomHelpers.leaveRoom(socket, roomID);
+        roomHelpers.leaveRoom(clients[socket.id], roomID);
       }
       io().emit("UPDATE_ROOMS", rooms);
       clients[socket.id] = null;

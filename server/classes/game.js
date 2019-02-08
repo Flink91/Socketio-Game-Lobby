@@ -32,7 +32,7 @@ Game.prototype.nextTurn = function (turn) {
 
   y = this.dropToBottom(x, y);
 
-  this.boardState[y][x] = this.currentPlayer + 1;
+  this.boardState[y][x] = 1 + ((this.currentPlayer + 1) % 2);
 
   if (this.checkWin()) {
     this.winner = this.players[this.currentPlayer].name;

@@ -39,8 +39,10 @@ const mutations = {
   endGame(state, payload) {
     if (payload == -1) {
       alert("Draw! \n Returning to Lobby...");
+      router.go(-1);
     } else {
-      alert(state.currentPlayer.name + " won!\n Returning to Lobby...");
+      alert(state.currentPlayer.name + " won!");
+      alert("Returning to Lobby...");
       router.go(-1);
     }
   },
@@ -68,6 +70,7 @@ const actions = {
   }, payload) {
     commit("setBoard", payload[0]);
     setTimeout(() => {
+      console.log("WHAT THE FUCK");
       commit("endGame", payload[1]);
       commit("clearGame");
     }, 100);
@@ -80,12 +83,15 @@ const actions = {
   }, payload) {
     // eslint-disable-next-line
     console.log("%c socket_start_game", "color:green");
+
+
     router.push({
       name: "game",
       params: {
         gameID: rootState.user.room.id
       }
     });
+
     commit("setRunning", true);
     commit("setBoard", [
       [0, 0, 0, 0, 0, 0, 0],

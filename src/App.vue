@@ -19,7 +19,9 @@
     </v-content>
 
     <v-footer class="pa-3">
-      <a router-link to="/about">About</a>
+      <router-link to="/about">
+        <a>About</a>
+      </router-link>
       <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>

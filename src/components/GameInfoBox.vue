@@ -55,7 +55,7 @@ export default {
       // prevent spam clicking
       setTimeout(() => {
         this.isClicked = false;
-      }, 3000);
+      }, 1000);
     },
     startGame() {
       this.$socket.emit("START_GAME", this.options);

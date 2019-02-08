@@ -7,7 +7,7 @@
             <td v-for="(x,x_index) in y" :key="x_index">
               <div
                 class="piece"
-                @click="clicked(x_index,y_index, $event)"
+                @click="clicked(x_index,y_index)"
                 :style="{backgroundColor: pieceColors[board[y_index][x_index]]}"
               >
                 <!-- <small>{{x_index}}|{{y_index}}</small> -->
@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    clicked(x, y, $event) {
+    clicked(x, y) {
       if (this.winner === null) {
         this.$socket.emit("GAME_TURN", [x, y]);
       }
