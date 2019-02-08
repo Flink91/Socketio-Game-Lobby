@@ -20,6 +20,7 @@ module.exports = function (io, clients, rooms) {
         clients[socket.id].room = roomID;
         console.log(clients[clientID].name + " has created room: " +
           rooms[roomID].readableName + " with size: " + size);
+        io().sockets.emit("UPDATE_ROOMS", rooms);
         getPeopleInRoom(clientID, roomID);
         return roomID;
       } else {
@@ -58,7 +59,6 @@ module.exports = function (io, clients, rooms) {
           " has joined room: " +
           rooms[roomID].readableName
         );
-
         io().sockets.emit("UPDATE_ROOMS", rooms);
         getPeopleInRoom(clientID, roomID);
         return true;

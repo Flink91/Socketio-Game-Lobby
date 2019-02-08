@@ -26,8 +26,9 @@
                   :tick-labels="ticksLabels"
                   v-model="slider"
                   thumb-label="always"
-                  :max="8"
+                  step="2"
                   :min="2"
+                  :max="8"
                 ></v-slider>
                 <v-select
                   :items="games"
@@ -56,7 +57,7 @@ export default {
       dialog: false,
       valid: true,
       games: ["Connect 4", "Connect 4", "Connect 4"],
-      gameSelect: null,
+      gameSelect: "Connect 4",
       gameSelectRules: [v => !!v || "A Game must be selected"],
       roomName: "",
       nameRules: [
@@ -66,7 +67,7 @@ export default {
           (v && v.replace(/\s/g, "").length > 0) || "Name cannot be only spaces"
       ],
       slider: 2,
-      ticksLabels: ["2", "3", "4", "5", "6", "7", "8"]
+      ticksLabels: ["2", "4", "6", "8"]
       // privateCheckbox: false
     };
   },

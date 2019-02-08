@@ -55,6 +55,8 @@ export default {
   },
   methods: {
     kick(clientID) {
+      console.log("kick");
+      console.log(clientID);
       this.$socket.emit("KICK", clientID, callback => {
         // hmm
       });

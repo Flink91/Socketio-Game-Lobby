@@ -11,6 +11,7 @@ module.exports = function (io, clients, rooms) {
       var newroomID = roomHelpers.hostARoom(socket, socket.id, readableName, size, game);
       if (newroomID !== false) {
         socket.emit("HOST");
+        io().emit("UPDATE_ROOMS", rooms);
         callback(newroomID);
       }
     });
@@ -48,10 +49,14 @@ module.exports = function (io, clients, rooms) {
     //HOST KICKS Client
     socket.on("KICK", function (clientID, callback) {
       var toBeKicked = io().sockets.connected[clientID];
+      console.log("trying to kick " + toBeKicked.id);
 
       if (toBeKicked == undefined) return false;
+      console.log("no undefined");
       if (!roomHelpers.isClient(toBeKicked)) return false;
-      if (!roomHelpers.isInRoom(socket, toBeKicked.id)) return false;
+      console.log("isclient");
+      if (!roomHelpers.isInRoom(clients, toBeKicked.id)) return false;
+      console.log("is in room");
 
       if (clients[socket.id].isHost) {
         var room = roomHelpers.findRoomByID(toBeKicked.id, rooms);

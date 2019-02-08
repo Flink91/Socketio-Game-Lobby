@@ -1,16 +1,13 @@
 <template>
   <v-app>
-    <v-toolbar app v-if="!(['room', 'game'].indexOf($route.name) > -1)">
+    <!-- <v-toolbar app v-if="!(['room', 'game'].indexOf($route.name) > -1)">
       <v-toolbar-title class="headline text-uppercase">
         <span>Chat Rooms&nbsp;</span>
         <span class="font-weight-light">with SocketIO &amp; Vue</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <v-btn flat to="/about">About</v-btn>
-    </v-toolbar>
-
+    </v-toolbar>-->
     <v-content>
       <router-view/>
 
@@ -20,6 +17,12 @@
         </v-flex>
       </v-layout>
     </v-content>
+
+    <v-footer class="pa-3">
+      <a router-link to="/about">About</a>
+      <v-spacer></v-spacer>
+      <div>&copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
   </v-app>
 </template>
 

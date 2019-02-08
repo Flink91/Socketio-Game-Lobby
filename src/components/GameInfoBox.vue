@@ -71,6 +71,9 @@ export default {
     isAllReady() {
       return this.$store.getters.isAllReady;
     }
+  },
+  created() {
+    this.isAllReady = false;
   }
 };
 </script>

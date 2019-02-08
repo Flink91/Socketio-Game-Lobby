@@ -1,16 +1,24 @@
 import Vue from "vue";
 import Router from "vue-router";
-// import Home from "./views/Home.vue";
+import Login from "./views/Login.vue";
 import Rooms from "./views/Rooms.vue";
+
+import AuthGuard from './auth-guard'
 
 Vue.use(Router);
 
 export default new Router({
 
   routes: [{
+      path: "/login",
+      name: "login",
+      component: Login
+    },
+    {
       path: "/",
-      name: "home",
-      component: Rooms
+      name: "rooms",
+      component: Rooms,
+      beforeEnter: AuthGuard
     },
     {
       path: "/about",
@@ -25,6 +33,7 @@ export default new Router({
       params: ['roomID'],
       path: "/room/:roomID",
       name: "room",
+      beforeEnter: AuthGuard,
       component: () =>
         import( /* webpackChunkName: "room" */ "./views/Room.vue")
     },
@@ -32,6 +41,7 @@ export default new Router({
       params: ['gameID'],
       path: "/game/:gameID",
       name: "game",
+      beforeEnter: AuthGuard,
       component: () =>
         import( /* webpackChunkName: "game" */ "./views/Game.vue")
     },

@@ -1,12 +1,10 @@
 <template>
   <v-container grid-list-sm class="py-1 px-1">
-    <v-layout>
-      <v-flex xs12>
+    <v-layout row wrap>
+      <v-flex xs12 md8>
         <app-connect-4/>
       </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex xs12>
+      <v-flex xs12 md4>
         <app-chat-box/>
       </v-flex>
     </v-layout>
