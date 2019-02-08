@@ -5,10 +5,18 @@
         <tbody>
           <tr v-for="(y,y_index) in board" :key="y_index">
             <td v-for="(x,x_index) in y" :key="x_index">
+              <transition name="slide">
+                <div
+                  v-if="isLastPiece(x_index,y_index)"
+                  class="piece fallingPiece"
+                  :style="{backgroundColor: getColor(y_index,x_index, true)}"
+                ></div>
+              </transition>
               <div
                 class="piece"
                 @click="clicked(x_index,y_index)"
-                :style="{backgroundColor: pieceColors[board[y_index][x_index]]}"
+                :class="{ hide: isLastPiece(x_index,y_index, false) }"
+                :style="{backgroundColor: getColor(y_index,x_index)}"
               >
                 <!-- <small>{{x_index}}|{{y_index}}</small> -->
               </div>
@@ -18,7 +26,9 @@
       </table>
     </v-flex>
     <v-flex xs12 align-content-center>
-      <h2>{{currentPlayer.name || false}}'s turn</h2>
+      <transition name="jump" mode="out-in">
+        <h2 :key="currentPlayer">{{currentPlayer.name || false}}'s turn</h2>
+      </transition>
     </v-flex>
   </v-container>
 </template>
@@ -33,6 +43,9 @@ export default {
   computed: {
     currentPlayer() {
       return this.$store.getters.currentPlayer;
+    },
+    currentTurn() {
+      return this.$store.getters.currentTurn;
     },
     board() {
       return this.$store.getters.board;
@@ -49,6 +62,29 @@ export default {
       if (this.winner === null) {
         this.$socket.emit("GAME_TURN", [x, y]);
       }
+    },
+    getColor(y, x, isFallingPiece) {
+      if (this.currentTurn[0] == x) {
+        if (this.currentTurn[1] == y) {
+          if (!isFallingPiece) {
+            return "#BEBEBE";
+          }
+        }
+      }
+      return this.pieceColors[this.board[y][x]];
+    },
+    isLastPiece(x, y) {
+      if (this.currentTurn) {
+        if (x == this.currentTurn[0]) {
+          if (y == this.currentTurn[1]) {
+            console.log(
+              "islastpiece: " + this.currentTurn[0] + " " + this.currentTurn[1]
+            );
+            return true;
+          }
+        }
+      }
+      return false;
     }
   },
   components: {}
@@ -88,6 +124,31 @@ export default {
     border-radius: 50%;
     border: 0;
     background: #bebebe;
+    transition: all 0.2s ease;
+  }
+
+  .board .fallingPiece {
+    position: absolute;
+  }
+
+  .active {
+    height: 10px;
+    width: 10px;
+  }
+
+  .slide-enter {
+    transform: translateY(-400px);
+  }
+  .slide-enter-active {
+    animation: slide-in 0.7s ease-in forwards;
+  }
+  @keyframes slide-in {
+    from {
+      transform: translateY(-400px);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 }
 </style>

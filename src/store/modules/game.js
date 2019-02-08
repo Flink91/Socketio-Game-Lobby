@@ -2,6 +2,7 @@ import router from "../../router";
 
 const state = {
   currentPlayer: null,
+  currentTurn: [],
   boardState: [],
   options: [],
   isRunning: true,
@@ -18,6 +19,9 @@ const getters = {
   board(state) {
     return state.boardState;
   },
+  currentTurn(state) {
+    return state.currentTurn;
+  },
   currentPlayer(state) {
     return state.currentPlayer;
   }
@@ -26,6 +30,9 @@ const getters = {
 const mutations = {
   setCurrentPlayer(state, payload) {
     state.currentPlayer = payload;
+  },
+  setCurrentTurn(state, payload) {
+    state.currentTurn = payload;
   },
   setBoard(state, payload) {
     state.boardState = payload;
@@ -38,12 +45,18 @@ const mutations = {
   },
   endGame(state, payload) {
     if (payload == -1) {
-      alert("Draw! \n Returning to Lobby...");
-      router.go(-1);
+      if (confirm('Draw! Return to lobby?')) {
+        router.go(-1);
+      } else {
+        router.go(-1);
+      }
+
     } else {
-      alert(state.currentPlayer.name + " won!");
-      alert("Returning to Lobby...");
-      router.go(-1);
+      if (confirm(state.currentPlayer.name + " won! Return to lobby?")) {
+        router.go(-1);
+      } else {
+        router.go(-1);
+      }
     }
   },
   setWinner(state, payload) {
@@ -62,15 +75,15 @@ const actions = {
   SOCKET_GAME_TURN({
     commit
   }, payload) {
-    commit("setBoard", payload[0]);
-    commit("setCurrentPlayer", payload[1]);
+    commit("setCurrentTurn", payload[0]);
+    commit("setBoard", payload[1]);
+    commit("setCurrentPlayer", payload[2]);
   },
   SOCKET_END_GAME({
     commit
   }, payload) {
     commit("setBoard", payload[0]);
     setTimeout(() => {
-      console.log("WHAT THE FUCK");
       commit("endGame", payload[1]);
       commit("clearGame");
     }, 100);

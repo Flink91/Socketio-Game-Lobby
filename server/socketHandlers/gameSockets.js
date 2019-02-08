@@ -36,7 +36,7 @@ module.exports = function (io, clients, rooms) {
         return false;
       }
       if (room.game.nextTurn(turn)) {
-        io().sockets.in(room.id).emit("GAME_TURN", room.game.boardState, room.game.players[room.game.currentPlayer]);
+        io().sockets.in(room.id).emit("GAME_TURN", room.game.currentTurn, room.game.boardState, room.game.players[room.game.currentPlayer]);
       } else {
         //the game ended
         io().sockets.in(room.id).emit("END_GAME", room.game.boardState, room.game.winner);

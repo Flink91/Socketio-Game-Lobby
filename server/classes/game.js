@@ -3,6 +3,7 @@ function Game(id, name, players) {
   this.name = name;
   this.players = players;
   this.currentPlayer = 0;
+  this.currentTurn = [];
   this.boardState = [];
   this.winner = -1;
   this.countToWin = 4;
@@ -31,6 +32,8 @@ Game.prototype.nextTurn = function (turn) {
   var y = turn[1];
 
   y = this.dropToBottom(x, y);
+
+  this.currentTurn = [x, y];
 
   this.boardState[y][x] = 1 + ((this.currentPlayer + 1) % 2);
 
