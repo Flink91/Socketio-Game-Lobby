@@ -2,7 +2,8 @@ const state = {
   connected: false,
   loading: false,
   info: null,
-  error: null
+  error: null,
+  io: {}
 };
 
 const getters = {
@@ -13,6 +14,12 @@ const getters = {
     return state.loading;
   }
 };
+
+const setters = {
+  setSocket: (state, socket) => {
+    state.io = socket
+  }
+}
 
 const mutations = {
   setLoading(state, payload) {
@@ -40,9 +47,15 @@ const mutations = {
     state.connected = false;
 
   },
-  SOCKET_reconnect() {
+  SOCKET_reconnect(state) {
     // eslint-disable-next-line
-    console.log("%c socket_connect_error", "color:orange");
+    console.log("%c socket_reconnect", "color:green");
+    var me = "12345";
+    // TODO doesn't work. Save that reconnect worked and then send this in the connect
+    setTimeout(function () {
+      state.io.emit("USER_RECONNECT", me);
+    }, 2000);
+
   },
   SOCKET_reconnect_attempt() {
     // eslint-disable-next-line
@@ -81,6 +94,7 @@ const mutations = {
 };
 
 const actions = {
+
   clearInfo({
     commit
   }) {
@@ -91,6 +105,7 @@ const actions = {
 export default {
   state,
   getters,
+  setters,
   mutations,
   actions
 };

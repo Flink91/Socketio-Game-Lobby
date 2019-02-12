@@ -89,20 +89,33 @@ module.exports = function (io, clients, rooms) {
 
     //on disconnect remove from room too
     socket.on('disconnect', function () {
-      console.log("disconnected from room");
-      if (roomHelpers.isInRoom(clients, socket.id)) {
-        console.log("is in room true");
-        var roomID = clients[socket.id].room;
-        io().sockets.in(roomID).emit("CHAT_MESSAGE", {
-          name: "SERVER",
-          type: "server",
-          message: clients[socket.id].name + " left",
-          color: "#CCC"
-        });
-        roomHelpers.leaveRoom(clients[socket.id], roomID);
+      console.log("disconnected from room?");
+      if (!clients[socket.id]) return;
+
+      clients[socket.id].isConnected = false;
+
+      setTimeout(function () {
+        if (!clients[socket.id].isConnected) {
+          console.log("Disconnected from room");
+          disconnectFromRoom();
+        }
+      }, 10000);
+
+      function disconnectFromRoom() {
+        if (roomHelpers.isInRoom(clients, socket.id)) {
+          console.log("is in room true");
+          var roomID = clients[socket.id].room;
+          io().sockets.in(roomID).emit("CHAT_MESSAGE", {
+            name: "SERVER",
+            type: "server",
+            message: clients[socket.id].name + " left",
+            color: "#CCC"
+          });
+          roomHelpers.leaveRoom(clients[socket.id], roomID);
+        }
+        io().emit("UPDATE_ROOMS", rooms);
+        clients[socket.id] = null;
       }
-      io().emit("UPDATE_ROOMS", rooms);
-      clients[socket.id] = null;
 
     });
   });

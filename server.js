@@ -36,6 +36,9 @@ var getIOInstance = function () {
 io.on("connection", function (socket) {
   console.log("New connection: " + socket.id);
 
+  io.on("USER_RECONNECT", function (data) {
+    console.log("Getting reconnection!");
+  });
 
   socket.on("NEW_USER", function (data) {
     console.log(
@@ -55,9 +58,16 @@ io.on("connection", function (socket) {
   });
 
   socket.on('disconnect', function () {
-    console.log("Disconnected: " + socket.id);
-    io.emit('USER_DISCONNECTED', clients[socket.id]);
+    console.log("Disconnected?: " + socket.id);
+    if (!clients[socket.id]) return;
 
+    clients[socket.id].isConnected = false;
+    setTimeout(function () {
+      if (!clients[socket.id].isConnected) {
+        console.log("Disconnected: " + socket.id);
+        io.emit('USER_DISCONNECTED', clients[socket.id]);
+      }
+    }, 10000);
     // can't do that here, roommodule needs to check this first
     // clients[socket.id] = null;
 

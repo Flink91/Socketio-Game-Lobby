@@ -44,6 +44,10 @@ new Vue({
   store,
   router,
   render: h => h(App),
+  beforeCreate() {
+    //TODO: CHECK COOKIE
+    store.commit('setSocket', this.$socket);
+  },
   created() {
     this.$router.push("/");
     this.$store.commit('setLoading', false);
