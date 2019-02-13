@@ -1,6 +1,7 @@
 import router from "../../router";
 
 const state = {
+  user: null,
   name: null,
   color: null,
   users: [],
@@ -14,6 +15,9 @@ const state = {
 const getters = {
   conncected(state) {
     return state.connected;
+  },
+  user(state) {
+    return state.user;
   },
   name(state) {
     return state.name;
@@ -81,6 +85,7 @@ const mutations = {
   SOCKET_JOINED_SERVER(state, user) {
     // eslint-disable-next-line
     console.log("%c socket_on_joined_server", "color:green");
+    state.user = user;
     state.name = user.username;
     state.color = user.color;
   },

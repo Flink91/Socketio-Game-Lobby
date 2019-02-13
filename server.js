@@ -23,8 +23,6 @@ const server = express()
 //   res.sendfile(__dirname + "/dist/index.html");
 // });
 
-
-
 var rooms = {};
 var clients = {};
 
