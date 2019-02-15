@@ -61,7 +61,7 @@ io.on("connection", function (socket) {
 
   socket.on('disconnect', function () {
     console.log("Disconnected?: " + socket.id);
-    if (!clients[socket.id]) return;
+    if (!clients[socket.id]) return false;
 
     clients[socket.id].isConnected = false;
     setTimeout(function () {
@@ -69,7 +69,7 @@ io.on("connection", function (socket) {
         console.log("Disconnected: " + socket.id);
         io.emit('USER_DISCONNECTED', clients[socket.id]);
       }
-    }, 10000);
+    }, 20000);
     // can't do that here, roommodule needs to check this first
     // clients[socket.id] = null;
 

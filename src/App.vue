@@ -42,9 +42,7 @@ export default {
       return this.$store.getters.user;
     }
   },
-  created() {
-    alert(this.user);
-  }
+  created() {}
 };
 </script>
 

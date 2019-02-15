@@ -91,15 +91,16 @@ module.exports = function (io, clients, rooms) {
     socket.on('disconnect', function () {
       console.log("disconnected from room?");
       if (!clients[socket.id]) return;
-
-      clients[socket.id].isConnected = false;
+      var roomID = clients[socket.id].room;
+      // clients[socket.id].isConnected = false;
+      io().sockets.in(roomID).emit("USER_DISCONNECTING", clients[socket.id]);
 
       setTimeout(function () {
         if (!clients[socket.id].isConnected) {
           console.log("Disconnected from room");
           disconnectFromRoom();
         }
-      }, 10000);
+      }, 20000);
 
       function disconnectFromRoom() {
         if (roomHelpers.isInRoom(clients, socket.id)) {

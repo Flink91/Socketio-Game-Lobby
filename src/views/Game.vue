@@ -1,5 +1,6 @@
 <template>
   <v-container grid-list-md class="py-1 px-1">
+    <app-loading-dialog/>
     <v-layout row wrap>
       <v-flex xs12 md8>
         <app-connect-4/>
@@ -16,6 +17,7 @@ import PeopleInRoomList from "@/components/PeopleInRoomList.vue";
 import GameInfoBox from "@/components/GameInfoBox.vue";
 import Connect4 from "@/components/game/Connect_4.vue";
 import ChatBox from "@/components/ChatBox.vue";
+import LoadingDialog from "@/components/shared/LoadingDialog.vue";
 export default {
   data() {
     return {
@@ -37,7 +39,8 @@ export default {
     "app-chat-box": ChatBox,
     "app-people-in-room-list": PeopleInRoomList,
     "app-game-info-box": GameInfoBox,
-    "app-connect-4": Connect4
+    "app-connect-4": Connect4,
+    "app-loading-dialog": LoadingDialog
   }
 };
 </script>

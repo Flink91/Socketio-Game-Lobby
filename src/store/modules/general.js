@@ -4,6 +4,7 @@ const state = {
   connected: false,
   loading: false,
   info: null,
+  waitingForOtherPlayer: false,
   error: null
 };
 
@@ -13,6 +14,9 @@ const getters = {
   },
   loading(state) {
     return state.loading;
+  },
+  waitingForOtherPlayer(state) {
+    return state.waitingForOtherPlayer;
   }
 };
 
@@ -22,6 +26,9 @@ const mutations = {
   },
   setInfo(state, payload) {
     state.error = payload;
+  },
+  setWaitingForOtherPlayer(state, payload) {
+    state.waitingForOtherPlayer = payload;
   },
   clearInfo(state) {
     state.info = null;

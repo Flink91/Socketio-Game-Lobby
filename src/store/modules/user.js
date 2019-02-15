@@ -69,24 +69,6 @@ const getters = {
 };
 
 const mutations = {
-  SOCKET_USER_DISCONNECTED(state, user) {
-    // eslint-disable-next-line
-    console.log("%c socket_on_user_disconnected", "color:green");
-    // eslint-disable-next-line
-    console.log(user);
-    // eslint-disable-next-line
-    console.log(state.users);
-    // delete user from local users, if not disconnected before name pick
-    if (user) {
-      var disconnectedUser = state.users.find(x => x.id === user.id);
-      var posInArray = state.users.indexOf(disconnectedUser);
-      // delete state.users[posInArray];
-      state.users.splice(posInArray, 1);
-      //save disconnects to show on screen
-      user.disconnected = true;
-      state.broadcastMessages.push(user);
-    }
-  },
   SOCKET_JOINED_SERVER(state, user) {
     // eslint-disable-next-line
     console.log("%c socket_on_joined_server", "color:green");
@@ -146,6 +128,37 @@ const mutations = {
 };
 
 const actions = {
+  SOCKET_USER_DISCONNECTING({
+    rootState
+  }, user) {
+    // eslint-disable-next-line
+    console.log("%c socket_on_user_disconnecting", "color:orange");
+    // eslint-disable-next-line
+    console.log(user);
+    rootState.general.waitingForOtherPlayer = user;
+  },
+  SOCKET_USER_DISCONNECTED({
+    state,
+    rootState
+  }, user) {
+    // eslint-disable-next-line
+    console.log("%c socket_on_user_disconnected", "color:green");
+    // eslint-disable-next-line
+    console.log(user);
+    // eslint-disable-next-line
+    console.log(state.users);
+    // delete user from local users, if not disconnected before name pick
+    if (user) {
+      rootState.general.waitingForOtherPlayer = false;
+      var disconnectedUser = state.users.find(x => x.id === user.id);
+      var posInArray = state.users.indexOf(disconnectedUser);
+      // delete state.users[posInArray];
+      state.users.splice(posInArray, 1);
+      //save disconnects to show on screen
+      user.disconnected = true;
+      state.broadcastMessages.push(user);
+    }
+  },
   SOCKET_KICKED({
     state,
     commit,
