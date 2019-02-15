@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuetify from 'vuetify';
 import "./plugins/vuetify";
-import colors from 'vuetify/es5/util/colors';
+// import colors from 'vuetify/es5/util/colors';
 import store from "./store/index";
 import App from "./App.vue";
 import VueSocketIO from "vue-socket.io";
@@ -44,9 +44,23 @@ new Vue({
   store,
   router,
   render: h => h(App),
+  computed: {
+    user() {
+      return store.getters.user;
+    }
+  },
   beforeCreate() {
-    //TODO: CHECK COOKIE
-    store.commit('setSocket', this.$socket);
+    let myLocalStorage = localStorage.getItem('vuex_socket_lobby');
+    console.log("checking local storage");
+    if (myLocalStorage !== null) {
+      if (store.getters.userId !== null) {
+        console.log("local storage and userid found");
+        console.log(store.getters.userId);
+
+        this.$socket.emit("RECONNECT_USER", store.getters.userId);
+        store.commit("setLoading", true);
+      }
+    }
   },
   created() {
     this.$router.push("/");

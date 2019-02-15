@@ -34,11 +34,15 @@ var getIOInstance = function () {
 io.on("connection", function (socket) {
   console.log("New connection: " + socket.id);
 
-  io.on("USER_RECONNECT", function (data) {
-    console.log("Getting reconnection!");
+  socket.on("RECONNECT_USER", function (id) {
+    console.log("Getting reconnection: " + id);
+    if (clients[id]) {
+      clients[id].isConnected = true;
+    }
   });
 
   socket.on("NEW_USER", function (data) {
+    data.id = socket.id;
     console.log(
       socket.id + "is now known as: " + data.username + " (" + data.color + ")"
     );

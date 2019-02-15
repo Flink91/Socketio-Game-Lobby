@@ -4,8 +4,7 @@ const state = {
   connected: false,
   loading: false,
   info: null,
-  error: null,
-  io: {}
+  error: null
 };
 
 const getters = {
@@ -16,12 +15,6 @@ const getters = {
     return state.loading;
   }
 };
-
-const setters = {
-  setSocket: (state, socket) => {
-    state.io = socket
-  }
-}
 
 const mutations = {
   setLoading(state, payload) {
@@ -109,7 +102,6 @@ const actions = {
 export default {
   state,
   getters,
-  setters,
   mutations,
   actions
 };

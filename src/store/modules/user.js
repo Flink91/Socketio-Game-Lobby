@@ -1,7 +1,9 @@
 import router from "../../router";
 
 const state = {
+  // todo: unpack this user.user, ew
   user: null,
+  userId: null,
   name: null,
   color: null,
   users: [],
@@ -18,6 +20,9 @@ const getters = {
   },
   user(state) {
     return state.user;
+  },
+  userId(state) {
+    return state.userId;
   },
   name(state) {
     return state.name;
@@ -86,6 +91,7 @@ const mutations = {
     // eslint-disable-next-line
     console.log("%c socket_on_joined_server", "color:green");
     state.user = user;
+    state.userId = user.id;
     state.name = user.username;
     state.color = user.color;
   },

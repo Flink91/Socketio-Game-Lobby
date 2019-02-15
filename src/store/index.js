@@ -7,10 +7,14 @@ import game from "./modules/game";
 
 Vue.use(Vuex);
 
-const inAnHour = new Date(new Date().getTime() + 60 * 60 * 1000);
+// TODO: Cookie might be better
+// const inAnHour = new Date(new Date().getTime() + 60 * 60 * 1000);
 
 export default new Vuex.Store({
-  plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    key: "vuex_socket_lobby",
+    paths: ["user", "game"]
+  })],
   state: {},
   getters: {},
   mutations: {},

@@ -37,7 +37,13 @@ export default {
     info() {
       window.scrollTo(0, 0);
       return this.$store.getters.info;
+    },
+    user() {
+      return this.$store.getters.user;
     }
+  },
+  created() {
+    alert(this.user);
   }
 };
 </script>
