@@ -1,7 +1,7 @@
-function Room(id, client, readableName, size, game) {
+function Room(id, client, hostId, readableName, size, game) {
   this.id = id;
   this.readableName = readableName;
-  this.hostID = client.id;
+  this.hostID = hostId;
   this.clients = [];
   this.size = size;
   this.game = game;
@@ -14,7 +14,7 @@ Room.prototype.addClient = function (client) {
     "Clients in room with id: " +
     this.id +
     "\n First Client:" +
-    this.clients[0].id
+    this.clients[0].name
   );
 };
 

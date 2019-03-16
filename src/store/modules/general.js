@@ -1,4 +1,4 @@
-import * as Cookies from 'js-cookie'
+// import * as Cookies from 'js-cookie'
 
 const state = {
   connected: false,
@@ -52,13 +52,10 @@ const mutations = {
   SOCKET_reconnect(state) {
     // eslint-disable-next-line
     console.log("%c socket_reconnect", "color:green");
-    let me = Cookies.get('general');
-    console.log("me");
-    console.log(me);
     // TODO doesn't work. Save that reconnect worked and then send this in the connect
-    setTimeout(function () {
-      state.io.emit("USER_RECONNECT", me);
-    }, 2000);
+    // setTimeout(function () {
+    //   state.io.emit("USER_RECONNECT", me);
+    // }, 2000);
 
   },
   SOCKET_reconnect_attempt() {

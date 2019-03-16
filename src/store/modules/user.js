@@ -2,8 +2,8 @@ import router from "../../router";
 
 const state = {
   // todo: unpack this user.user, ew
-  user: null,
   userId: null,
+  uniqueId: null,
   name: null,
   color: null,
   users: [],
@@ -19,10 +19,17 @@ const getters = {
     return state.connected;
   },
   user(state) {
-    return state.user;
+    return {
+      "username": state.name,
+      "color": state.color,
+      "id": state.userId
+    };
   },
   userId(state) {
     return state.userId;
+  },
+  uniqueId(state) {
+    return state.uniqueId;
   },
   name(state) {
     return state.name;
@@ -72,9 +79,10 @@ const mutations = {
   SOCKET_JOINED_SERVER(state, user) {
     // eslint-disable-next-line
     console.log("%c socket_on_joined_server", "color:green");
-    state.user = user;
+    // state.user = user;
     state.userId = user.id;
-    state.name = user.username;
+    state.uniqueId = user.uniqueId;
+    state.name = user.name;
     state.color = user.color;
   },
   SOCKET_NEW_USER(state, user) {
@@ -83,6 +91,36 @@ const mutations = {
     state.users.push(user);
     state.broadcastMessages.push(user);
 
+  },
+  //reconnection to the main page
+  // SOCKET_RECONNECT_USER(state, user) {
+  // eslint-disable-next-line
+  // console.log("%c socket_on_reconnect_user", "color:green");
+  //},
+  //reconnection to the main page
+  SOCKET_RECONNECT(state, user) {
+    // eslint-disable-next-line
+    console.log("%c socket_on_reconnect_myself", "color:green");
+    // eslint-disable-next-line
+    console.log(user);
+
+  },
+  //when user to reconnect wasn't found on server go back to login
+  SOCKET_RECONNECT_DECLINED(state) {
+    // eslint-disable-next-line
+    console.log("%c socket_on_reconnect_declined", "color:green");
+    // TODO: Find way to reset whole state
+    // state.user = null;
+    state.userId = null;
+    state.name = null;
+    state.color = null;
+    state.users = [];
+    state.broadcastMessages = [];
+    state.rooms = null;
+    state.messages = [];
+    state.room = null;
+    state.isHost = false;
+    router.push("/login");
   },
   SOCKET_HOST(state) {
     // eslint-disable-next-line
@@ -98,6 +136,8 @@ const mutations = {
 
   //this shall replace host and join
   SOCKET_GET_ROOM_INFO(state, message) {
+    // eslint-disable-next-line
+    console.log("%c socket_get_room_info", "color:green");
     state.room = message;
   },
   SOCKET_UPDATE_ROOMS(state, message) {
@@ -118,9 +158,9 @@ const mutations = {
     console.log("%c socket_chat_message", "color:green");
     state.messages.push(message)
   },
-  setUser(state, payload) {
-    state.user = payload;
-  },
+  // setUser(state, payload) {
+  //   state.user = payload;
+  // },
   clearMessages(state) {
     state.messages = [];
   }

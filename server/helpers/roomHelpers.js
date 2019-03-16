@@ -1,23 +1,30 @@
 module.exports = function (io, clients, rooms) {
-  var uuid = require("node-uuid");
+  const uuidv4 = require('uuid/v4');
   var Room = require("../classes/room.js");
+
+  var helpers = require('./helpers.js')();
 
   function hostARoom(socket, clientID, readableName, size, game) {
     if (isInRoom(clients, clientID)) {
       sendError(socket, "You are already in a room");
       return false;
-    } else if (clients[socket.id] == undefined) {
+    } else if (clients[clientID] == undefined) {
+      console.log("hostaroom: client not known");
+      console.log(socket.id);
+      console.log(clients);
       sendError(socket, "You are not known on the server");
       return false;
     }
 
-    var roomID = uuid.v4();
-    rooms[roomID] = new Room(roomID, clients[clientID], readableName, size, game);
+    var roomID = uuidv4();
+    rooms[roomID] = new Room(roomID, clients[clientID], clientID, readableName, size, game);
+
+    console.log("new room created, now joining");
 
     socket.join(roomID, function (err) {
       if (!err) {
-        clients[socket.id].isHost = true;
-        clients[socket.id].room = roomID;
+        clients[clientID].isHost = true;
+        clients[clientID].room = roomID;
         console.log(clients[clientID].name + " has created room: " +
           rooms[roomID].readableName + " with size: " + size);
         io().sockets.emit("UPDATE_ROOMS", rooms);
@@ -36,7 +43,7 @@ module.exports = function (io, clients, rooms) {
     if (isInRoom(clients, clientID)) {
       sendError(socket, "You are already in a room");
       return false;
-    } else if (clients[socket.id] == undefined) {
+    } else if (clients[clientID] == undefined) {
       sendError(socket, "You are not known on the server");
       return false;
     } else if (!rooms[roomID]) {
@@ -50,8 +57,8 @@ module.exports = function (io, clients, rooms) {
     socket.join(roomID, function (err) {
 
       if (!err) {
-        clients[socket.id].isHost = false;
-        clients[socket.id].room = roomID;
+        clients[clientID].isHost = false;
+        clients[clientID].room = roomID;
 
         rooms[roomID].addClient(clients[clientID]);
         console.log(
@@ -85,12 +92,12 @@ module.exports = function (io, clients, rooms) {
     if (index !== -1) roomClients.splice(index, 1);
 
     //if the host leaves, all others are kicked and the room is deleted
-    console.log(clients[client.id]);
-    if (clients[client.id].isHost) {
-      console.log(clients[client.id].isHost);
+    console.log(client);
+    if (client.isHost) {
       io().sockets.in(roomID).emit("HOST_LEFT");
       io().sockets.emit("UPDATE_ROOMS", rooms);
     }
+
 
     // check if room now empty => delete
     if (room.clients.length <= 0) {
@@ -107,10 +114,10 @@ module.exports = function (io, clients, rooms) {
         if (!err) {
 
           // if the Client is still online, update Client object
-          if (clients[client.id]) {
-            clients[client.id].isHost = null;
-            clients[client.id].ready = false;
-            clients[client.id].room = null;
+          if (client) {
+            client.isHost = null;
+            client.ready = false;
+            client.room = null;
           }
 
         } else {
@@ -127,7 +134,8 @@ module.exports = function (io, clients, rooms) {
   }
 
   function isClient(socket) {
-    if (clients[socket.id] == undefined) {
+    var uniqueId = helpers.findClientBySocketId(socket.id, clients);
+    if (clients[uniqueId] == undefined) {
       socket.emit("ERROR", {
         message: "User unknown. Maybe you lost connection. Please join again.",
         type: "error"
@@ -139,10 +147,11 @@ module.exports = function (io, clients, rooms) {
   }
 
   function isInRoom(clients, clientID) {
+    var uniqueId = helpers.findClientBySocketId(clientID, clients);
     // if the client is already a host, or already connected to a room
-    if (clients[clientID] != undefined) {
-      if ("room" in clients[clientID]) {
-        if (clients[clientID].room != undefined) {
+    if (clients[uniqueId] != undefined) {
+      if ("room" in clients[uniqueId]) {
+        if (clients[uniqueId].room != undefined) {
           return true;
         }
       } else {
@@ -152,9 +161,10 @@ module.exports = function (io, clients, rooms) {
   }
 
   function getPeopleInRoom(clientID, roomID) {
-    var room = findRoomByID(clientID, rooms);
-    if (room != null) {
-      io().sockets.in(room.id).emit("GET_ROOM_INFO", room);
+    // var room = findRoomByID(clientID, rooms);
+    if (rooms[roomID] != null || rooms[roomID] != undefined) {
+      console.log("~getpeopleinroom ", roomID);
+      io().sockets.in(roomID).emit("GET_ROOM_INFO", rooms[roomID]);
     }
   }
 

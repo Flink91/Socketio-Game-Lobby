@@ -1,5 +1,6 @@
 module.exports = function (io, clients, rooms) {
 
+  var helpers = require('../helpers/helpers.js')();
   var roomHelpers = require('../helpers/roomHelpers.js')(io, clients, rooms);
 
   io().on('connection', socket => {
@@ -9,7 +10,8 @@ module.exports = function (io, clients, rooms) {
       if (!roomHelpers.isClient(socket)) return false;
       if (!roomHelpers.isInRoom(clients, socket.id)) return false;
       // find out which room the client is in
-      msg.color = clients[socket.id].color;
+      var uniqueId = helpers.findClientBySocketId(socket.id, clients);
+      msg.color = clients[uniqueId].color;
       var room = roomHelpers.findRoomByID(socket.id, rooms);
       io().sockets
         .in(room.id)

@@ -97,7 +97,6 @@ const actions = {
     // eslint-disable-next-line
     console.log("%c socket_start_game", "color:green");
 
-
     router.push({
       name: "game",
       params: {

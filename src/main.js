@@ -12,7 +12,7 @@ import Toast from "./components/shared/Toast.vue";
 import VueChatScroll from 'vue-chat-scroll';
 Vue.use(VueChatScroll);
 
-Vue.config.productionTip = false;
+// Vue.config.productionTip = false;
 
 Vue.use(Vuetify, {
   theme: {
@@ -34,6 +34,13 @@ Vue.use(
       store,
       actionPrefix: "SOCKET_",
       mutationPrefix: "SOCKET_"
+    },
+    options: {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 99999,
+      timeout: 20000
     }
   })
 );
@@ -57,7 +64,7 @@ new Vue({
         console.log("local storage and userid found");
         console.log(store.getters.userId);
 
-        this.$socket.emit("RECONNECT_USER", store.getters.userId);
+        this.$socket.emit("RECONNECT_USER", store.getters.uniqueId);
         store.commit("setLoading", true);
       }
     }

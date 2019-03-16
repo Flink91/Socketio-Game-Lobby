@@ -2,13 +2,19 @@ module.exports = function (io, clients, rooms) {
 
   require("../classes/room.js");
   require("../classes/game.js");
+  var helpers = require('../helpers/helpers.js')();
   var roomHelpers = require('../helpers/roomHelpers.js')(io, clients, rooms);
 
   io().on('connection', socket => {
 
     //HOST A ROOM
     socket.on("HOST", function (readableName, size, game, callback) {
-      var newroomID = roomHelpers.hostARoom(socket, socket.id, readableName, size, game);
+      var uniqueId = helpers.findClientBySocketId(socket.id, clients);
+      console.log("hosting");
+      console.log(uniqueId);
+      var newroomID = roomHelpers.hostARoom(socket, uniqueId, readableName, size, game);
+      console.log("newroomid");
+      console.log(newroomID);
       if (newroomID !== false) {
         socket.emit("HOST");
         io().emit("UPDATE_ROOMS", rooms);
@@ -20,10 +26,13 @@ module.exports = function (io, clients, rooms) {
     socket.on("JOIN", function (roomID, callback) {
       if (!roomHelpers.isClient(socket)) return false;
       // join existing room
-      if (roomHelpers.connectClientToRoom(socket, roomID, socket.id)) {
+      console.log("join");
+      var uniqueId = helpers.findClientBySocketId(socket.id, clients);
+      console.log(uniqueId);
+      if (roomHelpers.connectClientToRoom(socket, roomID, uniqueId)) {
         io().sockets.in(roomID).emit("CHAT_MESSAGE", {
           name: "SERVER",
-          message: clients[socket.id].name + " joined",
+          message: clients[uniqueId].name + " joined",
           type: "server",
           color: "#CCC"
         });
@@ -55,8 +64,9 @@ module.exports = function (io, clients, rooms) {
       if (!roomHelpers.isClient(toBeKicked)) return false;
       if (!roomHelpers.isInRoom(clients, toBeKicked.id)) return false;
 
+      var uniqueId = helpers.findClientBySocketId(clientId, clients);
 
-      if (clients[socket.id].isHost) {
+      if (clients[uniqueId].isHost) {
         var room = roomHelpers.findRoomByID(toBeKicked.id, rooms);
 
         if (roomHelpers.leaveRoom(toBeKicked, room.id)) {
@@ -74,13 +84,14 @@ module.exports = function (io, clients, rooms) {
 
     //LEAVE ROOM
     socket.on("LEAVE_ROOM", function (callback) {
+      var uniqueId = helpers.findClientBySocketId(socket.id, clients);
       if (!roomHelpers.isClient(socket)) return false;
-      var roomID = clients[socket.id].room;
+      var roomID = clients[uniqueId].room;
       if (roomHelpers.leaveRoom(socket, roomID)) {
         io().sockets.in(roomID).emit("CHAT_MESSAGE", {
           name: "SERVER",
           type: "server",
-          message: clients[socket.id].name + " left",
+          message: clients[uniqueId].name + " left",
           color: "#CCC"
         });
         callback();
@@ -89,33 +100,41 @@ module.exports = function (io, clients, rooms) {
 
     //on disconnect remove from room too
     socket.on('disconnect', function () {
+      var uniqueId = helpers.findClientBySocketId(socket.id, clients);
       console.log("disconnected from room?");
-      if (!clients[socket.id]) return;
-      var roomID = clients[socket.id].room;
-      // clients[socket.id].isConnected = false;
-      io().sockets.in(roomID).emit("USER_DISCONNECTING", clients[socket.id]);
+      if (!clients[uniqueId]) {
+        console.log("Disconnected immediately from room. Client wasn't known");
+        return false;
+      }
+      var roomID = clients[uniqueId].room;
+      // clients[uniqueId].isConnected = false;
+      io().sockets.in(roomID).emit("USER_DISCONNECTING", clients[uniqueId]);
 
       setTimeout(function () {
-        if (!clients[socket.id].isConnected) {
+        if (!clients[uniqueId].isConnected) {
           console.log("Disconnected from room");
           disconnectFromRoom();
+        } else {
+          console.log("Didn't disconnect from Room, reconnected first");
+          console.log(clients[uniqueId]);
         }
-      }, 20000);
+      }, 10000);
 
       function disconnectFromRoom() {
+        var uniqueId = helpers.findClientBySocketId(socket.id, clients);
         if (roomHelpers.isInRoom(clients, socket.id)) {
           console.log("is in room true");
-          var roomID = clients[socket.id].room;
+          var roomID = clients[uniqueId].room;
           io().sockets.in(roomID).emit("CHAT_MESSAGE", {
             name: "SERVER",
             type: "server",
-            message: clients[socket.id].name + " left",
+            message: clients[uniqueId].name + " left",
             color: "#CCC"
           });
-          roomHelpers.leaveRoom(clients[socket.id], roomID);
+          roomHelpers.leaveRoom(clients[uniqueId], roomID);
         }
         io().emit("UPDATE_ROOMS", rooms);
-        clients[socket.id] = null;
+        clients[uniqueId] = null;
       }
 
     });
