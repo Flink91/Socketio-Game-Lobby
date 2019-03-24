@@ -131,6 +131,10 @@ export default {
     position: absolute;
   }
 
+  .hide{
+    display:none;
+  }
+
   .active {
     height: 10px;
     width: 10px;
