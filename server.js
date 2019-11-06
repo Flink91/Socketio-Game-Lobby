@@ -36,6 +36,9 @@ var getIOInstance = function () {
 io.on("connection", function (socket) {
   console.log("New connection: " + socket.id);
 
+  socket.on("DEBUG_INFO", function (id) {
+    io.emit("DEBUG_INFO", clients[id]);
+  });
   socket.on("RECONNECT_USER", function (id) {
     console.log("Getting reconnection: " + id);
     console.log(socket.id);

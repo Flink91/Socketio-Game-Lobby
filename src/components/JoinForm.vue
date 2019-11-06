@@ -52,7 +52,7 @@ export default {
           (v && v.replace(/\s/g, "").length > 0) || "Name cannot be only spaces"
       ],
       color: "",
-      checkbox: false
+      checkbox: true
     };
   },
   computed: {

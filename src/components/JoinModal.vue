@@ -40,7 +40,8 @@
             <v-expansion-panel-content>
               <div slot="header">Terms and conditions</div>
               <v-card>
-                <v-card-text>Put your terms and condititons here.
+                <v-card-text>
+                  Put your terms and condititons here.
                   <ul>
                     <li>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.</li>
                     <li>From time to time this website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s). We have no responsibility for the content of the linked website(s).</li>
@@ -71,7 +72,7 @@ export default {
           (v && v.replace(/\s/g, "").length > 0) || "Name cannot be only spaces"
       ],
       color: "",
-      checkbox: false
+      checkbox: true
     };
   },
   computed: {
